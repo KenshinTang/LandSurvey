@@ -1,34 +1,25 @@
 package com.kapplication.landsurvey.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.LinkedList;
+
 public class Polygon {
-    private Point head = null;
+    public LinkedList<LatLng> mPoints = new LinkedList<>();
 
-    public Polygon(Point head) {
-        this.head = head;
-        head.next = head;
+    public Polygon() {
     }
 
-    public Polygon(float x, float y) {
-        head = new Point(x, y);
-        head.next = head;
+    public void addPoint(double lat, double lng) {
+        addPoint(new LatLng(lat, lng));
     }
 
-    public void addPoint(float x, float y) {
-        addPoint(new Point(x, y));
+    public void addPoint(LatLng ll) {
+        mPoints.add(ll);
     }
 
-    public void addPoint(Point p) {
-        if (head.next == head) {
-            head.next = p;
-            p.next = head;
-        } else {
-            Point temp = head;
-            while (temp.next != head) {
-                temp = temp.next;
-            }
-            temp.next = p;
-            p.next = head;
-        }
+    public void removePoint() {
+        mPoints.removeLast();
     }
 
     public double getArea() {
@@ -36,6 +27,12 @@ public class Polygon {
     }
 
     public double getPerimeter() {
-        return 0d;
+        double perimeter = 0d;
+        LatLng temp = mPoints.getFirst();
+        for (LatLng p: mPoints) {
+            perimeter += Utils.getDistance(temp, p);
+            temp = p;
+        }
+        return perimeter;
     }
 }

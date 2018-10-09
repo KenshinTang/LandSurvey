@@ -1,7 +1,8 @@
 package com.kapplication.landsurvey;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,6 +10,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
+import com.kapplication.landsurvey.model.Polygon;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -22,6 +25,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Polygon polygon = new Polygon();
+        polygon.addPoint(30.560430d, 104.068764d);
+        polygon.addPoint(30.551398d, 104.069041d);
+        polygon.addPoint(30.551398d, 104.056744d);
+        polygon.addPoint(30.560362d, 104.056744d);
+//        polygon.addPoint(30.560430d, 104.068764d);
+        //周长=4.43, 面积=1.17
+        Log.d("kenshin", polygon.getPerimeter() + "");
+        Log.d("kenshin", SphericalUtil.computeLength(polygon.mPoints) + "");
+        Log.d("kenshin", SphericalUtil.computeArea(polygon.mPoints) + "");
+//        Log.d("kenshin", polygon.getArea() + "");
+        ;
+
     }
 
 
