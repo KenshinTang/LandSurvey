@@ -23,6 +23,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.maps.android.SphericalUtil;
 import com.kapplication.landsurvey.model.Polygon;
@@ -191,6 +193,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         Task task = mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("kenshin", "Exception", e);
+            }
+        });
+        task.addOnSuccessListener(this, new OnSuccessListener() {
+            @Override
+            public void onSuccess(Object o) {
+//                Log.e("kenshin", o.toString());
+            }
+        });
         Log.e("kenshin", "taks:" + task.isSuccessful());
     }
 
