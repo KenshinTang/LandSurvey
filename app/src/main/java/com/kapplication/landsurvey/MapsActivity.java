@@ -67,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("kenshin", SphericalUtil.computeArea(polygon.mPoints) + "");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -122,7 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                // ...
 //                if (mRequestingLocationUpdates) {
 //                    if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                        // TODO: Consider calling
 //                        //    ActivityCompat#requestPermissions
 //                        // here to request the missing permissions, and then overriding
 //                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -182,7 +180,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
