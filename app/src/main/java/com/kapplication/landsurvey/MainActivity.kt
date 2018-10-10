@@ -14,8 +14,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.kapplication.landsurvey.Utils.PermissionUtils
 import com.kapplication.landsurvey.location.LocationService
+import com.kapplication.landsurvey.utils.PermissionUtils
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val TAG: String = "MainActivity"

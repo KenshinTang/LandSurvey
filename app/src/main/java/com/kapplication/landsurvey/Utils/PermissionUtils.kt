@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.kapplication.landsurvey.Utils
+package com.kapplication.landsurvey.utils
 
 import android.Manifest
 import android.app.AlertDialog
