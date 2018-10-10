@@ -27,9 +27,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.kapplication.landsurvey.location.LocationService;
 import com.kapplication.landsurvey.model.Utils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityTest extends AppCompatActivity {
     private LocationReceiver mLocationReceiver;
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivityTest.class.getSimpleName();
     private Activity A_;
     private TextView currentLocation;
     private static final int REQUEST_PERMISSIONS_LOCATION_SETTINGS_REQUEST_CODE = 33;
@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        A_ = MainActivity.this;
+        setContentView(R.layout.activity_main_test);
+        A_ = MainActivityTest.this;
         currentLocation = findViewById(R.id.currentLocation);
 
     }
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
             builder.addLocationRequest(locationRequest);
-            SettingsClient settingsClient = LocationServices.getSettingsClient(MainActivity.this);
+            SettingsClient settingsClient = LocationServices.getSettingsClient(MainActivityTest.this);
 
             settingsClient.checkLocationSettings(builder.build())
                     .addOnSuccessListener(A_, new OnSuccessListener<LocationSettingsResponse>() {
