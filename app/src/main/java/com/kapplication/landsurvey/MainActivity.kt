@@ -3,14 +3,11 @@ package com.kapplication.landsurvey
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.kapplication.landsurvey.Utils.PermissionUtils
+import com.kapplication.landsurvey.location.LocationService
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val TAG: String = "MainActivity"
@@ -27,20 +25,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mPermissionDenied = false
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
-    private var mLocationManager: LocationManager? = null
-    private var mCurrentLocation: LatLng = LatLng(0.0, 0.0)
+    //    private var mLocationManager: LocationManager? = null
+    private var mCurrentLocation: LatLng = CD
 
-    private val mLocationListener: LocationListener = object: LocationListener{
-        override fun onLocationChanged(location: Location) {
-            mCurrentLocation = LatLng(location.latitude, location.longitude)
-            Log.i(TAG, "current location: ${mCurrentLocation.toString()}")
-
-        }
-
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-        override fun onProviderEnabled(provider: String) {}
-        override fun onProviderDisabled(provider: String) {}
-    }
+//    private val mLocationListener: LocationListener = object: LocationListener{
+//        override fun onLocationChanged(location: Location) {
+//            mCurrentLocation = LatLng(location.latitude, location.longitude)
+//            Log.i(TAG, "current location: ${mCurrentLocation.toString()}")
+//
+//        }
+//
+//        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+//        override fun onProviderEnabled(provider: String) {}
+//        override fun onProviderDisabled(provider: String) {}
+//    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,13 +48,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        try {
-            // Request location updates
-            mLocationManager?.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0L, 0f, mLocationListener)
-        } catch(ex: SecurityException) {
-            Log.d(TAG, "Security Exception, no location available")
-        }
+//        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        try {
+//            // Request location updates
+//            mLocationManager?.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0L, 0f, mLocationListener)
+//        } catch(ex: SecurityException) {
+//            Log.d(TAG, "Security Exception, no location available")
+//        }
     }
 
     @SuppressLint("MissingPermission")
@@ -65,7 +63,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mGoogleMap = map
 
         with(mGoogleMap) {
-//            moveCamera(CameraUpdateFactory.newLatLngZoom(CD, 16f))
+            //            moveCamera(CameraUpdateFactory.newLatLngZoom(CD, 16f))
 //            addMarker(MarkerOptions().position(CD))
             setOnMyLocationButtonClickListener {
                 Toast.makeText(mContext, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
@@ -80,6 +78,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         enableMyLocation()
     }
+
+    override fun onResume() {
+        super.onResume()
+        startLocationService()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationService()
+    }
+
 
     private fun enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -114,7 +123,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun startLocationService() {
+    private fun startLocationService() {
+        startService(Intent(mContext, LocationService::class.java))
+    }
 
+    private fun stopLocationService() {
+        stopService(Intent(mContext, LocationService::class.java))
     }
 }

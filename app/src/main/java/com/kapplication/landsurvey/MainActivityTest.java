@@ -70,7 +70,7 @@ public class MainActivityTest extends AppCompatActivity {
         startService(intent);
         //Register BroadcastReceiver to receive event from our location service
         mLocationReceiver = new LocationReceiver();
-        registerReceiver(mLocationReceiver, new IntentFilter(LocationService.MY_LOCATION));
+        registerReceiver(mLocationReceiver, new IntentFilter(LocationService.Companion.getMY_LOCATION()));
         Log.i(TAG, " Registered location broadcast receiver");
     }
 
@@ -98,12 +98,12 @@ public class MainActivityTest extends AppCompatActivity {
             Log.d(TAG, "onReceive:" + intent == null? "": intent.toString());
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                if (extras.containsKey(LocationService.GPS_NOT_ENABLED)) {
-                    LocationRequest locationRequest = intent.getParcelableExtra(LocationService.GPS_NOT_ENABLED);
+                if (extras.containsKey(LocationService.Companion.getGPS_NOT_ENABLED())) {
+                    LocationRequest locationRequest = intent.getParcelableExtra(LocationService.Companion.getGPS_NOT_ENABLED());
                     checkForLocationSettings(locationRequest);
                 }
-                if (extras.containsKey(LocationService.INTENT_LOCATION_VALUE)) {
-                    Location location = intent.getParcelableExtra(LocationService.INTENT_LOCATION_VALUE);
+                if (extras.containsKey(LocationService.Companion.getINTENT_LOCATION_VALUE())) {
+                    Location location = intent.getParcelableExtra(LocationService.Companion.getINTENT_LOCATION_VALUE());
                     handleLocationUpdates(location);
                 }
             }
