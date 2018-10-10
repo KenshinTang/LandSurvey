@@ -2,19 +2,23 @@ package com.kapplication.landsurvey
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.kapplication.landsurvey.location.LocationService
+import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -25,13 +29,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mPermissionDenied = false
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
+    private lateinit var mLocationReceiver: LocationReceiver
     //    private var mLocationManager: LocationManager? = null
-    private var mCurrentLocation: LatLng = CD
+    private var mCurrentLatLng: LatLng = CD
 
 //    private val mLocationListener: LocationListener = object: LocationListener{
 //        override fun onLocationChanged(location: Location) {
-//            mCurrentLocation = LatLng(location.latitude, location.longitude)
-//            Log.i(TAG, "current location: ${mCurrentLocation.toString()}")
+//            mCurrentLatLng = LatLng(location.latitude, location.longitude)
+//            Log.i(TAG, "current location: ${mCurrentLatLng.toString()}")
 //
 //        }
 //
@@ -39,6 +44,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //        override fun onProviderEnabled(provider: String) {}
 //        override fun onProviderDisabled(provider: String) {}
 //    }
+
+    private inner class LocationReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "LocationReceiver(${intent})")
+            val extras = intent.extras
+            if (extras.containsKey(LocationService.KEY_MY_LOCATION)) {
+                val location = intent.getParcelableExtra<Location>(LocationService.KEY_MY_LOCATION)
+                mCurrentLatLng = LatLng(location.latitude, location.longitude)
+            }
+        }
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +84,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //            addMarker(MarkerOptions().position(CD))
             setOnMyLocationButtonClickListener {
                 Toast.makeText(mContext, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16f))
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
                 true
             }
 
@@ -125,9 +142,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun startLocationService() {
         startService(Intent(mContext, LocationService::class.java))
+
+        mLocationReceiver = LocationReceiver()
+        registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_MY_LOCATION))
     }
 
     private fun stopLocationService() {
         stopService(Intent(mContext, LocationService::class.java))
+        unregisterReceiver(mLocationReceiver)
     }
 }
