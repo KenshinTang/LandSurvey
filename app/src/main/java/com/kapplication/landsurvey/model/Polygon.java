@@ -30,7 +30,7 @@ public class Polygon {
         double perimeter = 0d;
         LatLng temp = mPoints.getFirst();
         for (LatLng p: mPoints) {
-            perimeter += Utils.getDistance(temp, p);
+            perimeter += Utils_B.getDistance(temp, p);
             temp = p;
         }
         return perimeter;

@@ -12,7 +12,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Utils {
+public class Utils_B {
 
     private static double EARTH_RADIUS = 6378137; // 赤道半径(单位m)
 

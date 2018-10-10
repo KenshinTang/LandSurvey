@@ -25,7 +25,7 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.kapplication.landsurvey.location.LocationService;
-import com.kapplication.landsurvey.model.Utils;
+import com.kapplication.landsurvey.model.Utils_B;
 
 public class MainActivityTest extends AppCompatActivity {
     private LocationReceiver mLocationReceiver;
@@ -47,9 +47,9 @@ public class MainActivityTest extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //PERMISSION
-        if (Utils.checkLocationPermission(A_)) {
-            registerLocationService();
-        }
+//        if (Utils_B.checkLocationPermission(A_)) {
+//            registerLocationService();
+//        }
     }
 
     @Override
@@ -78,7 +78,7 @@ public class MainActivityTest extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case Utils.MY_PERMISSIONS_REQUEST_LOCATION:
+            case Utils_B.MY_PERMISSIONS_REQUEST_LOCATION:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission has been granted.
@@ -181,7 +181,7 @@ public class MainActivityTest extends AppCompatActivity {
                     case Activity.RESULT_OK:
                         Log.i(TAG, "User agreed to make required location settings changes");
                         //PERMISSION
-                        if (Utils.checkLocationPermission(A_)) {
+                        if (Utils_B.checkLocationPermission(A_)) {
                             registerLocationService();
                         }
                         break;

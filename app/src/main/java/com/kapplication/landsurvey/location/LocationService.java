@@ -161,7 +161,6 @@ public class LocationService extends Service {
         Log.d(TAG, "requestLocationUpdates");
         Task task = mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
         Log.w(TAG, "requestLocationUpdates:" + task.isSuccessful());
-        Log.w(TAG, "requestLocationUpdates:" + task.isCanceled());
         Log.w(TAG, "requestLocationUpdates:" + task.isComplete());
     }
 
