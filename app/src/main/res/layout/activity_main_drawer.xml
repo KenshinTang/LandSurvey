@@ -22,9 +22,8 @@
         android:layout_width="225dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#111"
-        android:dividerHeight="0dp"
-        android:fragmentExitTransition="@drawable/common_google_signin_btn_icon_dark">
+        android:background="#FFF"
+        android:dividerHeight="0dp">
 
     </fragment>
 </android.support.v4.widget.DrawerLayout>

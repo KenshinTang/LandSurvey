@@ -42,8 +42,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             when {
                 extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
-                    mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
+                    if (location != null) {
+                        mCurrentLatLng = LatLng(location.latitude, location.longitude)
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
+                    }
                 }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
