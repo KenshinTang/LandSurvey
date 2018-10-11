@@ -6,11 +6,11 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.IBinder
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,6 +18,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
+
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val TAG: String = "MainActivity"
@@ -30,6 +31,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mContext: Context
     private lateinit var mLocationReceiver: LocationReceiver
     private var mCurrentLatLng: LatLng = CD
+
+    private var mLocationService: LocationService? = null
+    private var mBoundOnLocationService: Boolean = false
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -44,21 +48,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
-                }
-                extras.containsKey(LocationService.KEY_LOCATION_EXCEPTION) -> {
-                    val exception = intent.getSerializableExtra(LocationService.KEY_LOCATION_EXCEPTION) as ResolvableApiException
-                    try {
-                        // Show the dialog by calling startResolutionForResult(),
-                        // and check the result in onActivityResult().
-                        exception.startResolutionForResult(mContext as Activity, REQUEST_CHECK_SETTINGS)
-                    } catch (sendEx: IntentSender.SendIntentException) {
-                        // Ignore the error.
-                    }
+//                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
                 }
             }
         }
 
+    }
+
+    private val mConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            val binder = service as LocationService.LocationBinder
+            mLocationService = binder.getService()
+            mBoundOnLocationService = true
+            mLocationService?.setMainActivity(mContext as Activity)
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName) {
+            mBoundOnLocationService = false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,12 +82,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true)
         }
+
+        mLocationReceiver = LocationReceiver()
+        registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
+
+        bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
-        startLocationService()
     }
 
     override fun onResumeFragments() {
@@ -97,8 +109,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mGoogleMap = map
 
         with(mGoogleMap) {
-            //            moveCamera(CameraUpdateFactory.newLatLngZoom(CD, 16f))
-//            addMarker(MarkerOptions().position(CD))
             setOnMyLocationButtonClickListener {
                 Toast.makeText(mContext, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
@@ -115,7 +125,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onPause() {
         super.onPause()
-        stopLocationService()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        unregisterReceiver(mLocationReceiver)
+
+        if (mBoundOnLocationService) {
+            unbindService(mConnection)
+            mBoundOnLocationService = false
+        }
     }
 
 
@@ -151,7 +171,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         Log.i(TAG, "User agreed to make required location settings changes")
-                        //TODO LocationService.requestLocationUpdate()
+                        mLocationService?.startLocationUpdate()
                     }
                     Activity.RESULT_CANCELED -> {
                         Log.w(TAG, "User chose not to make required location settings changes")
@@ -164,17 +184,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun shouldShowRequestPermissionRationale(permission: String?): Boolean {
         return false
-    }
-
-    private fun startLocationService() {
-        startService(Intent(mContext, LocationService::class.java))
-
-        mLocationReceiver = LocationReceiver()
-        registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
-    }
-
-    private fun stopLocationService() {
-        stopService(Intent(mContext, LocationService::class.java))
-        unregisterReceiver(mLocationReceiver)
     }
 }

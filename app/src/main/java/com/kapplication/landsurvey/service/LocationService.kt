@@ -2,10 +2,13 @@ package com.kapplication.landsurvey.service
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Service
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
@@ -24,14 +27,20 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         val ACTION_LOCATION = "ACTION_LOCATION"
         val KEY_LAST_LOCATION = "KEY_LAST_LOCATION"
         val KEY_UPDATED_LOCATION = "KEY_UPDATED_LOCATION"
-        val KEY_LOCATION_EXCEPTION = "KEY_LOCATION_EXCEPTION"
-        val GPS_ACCURACY_LEVEL = 5f
     }
 
     private var mIsLocationUpdating = false
     private var mGoogleApiClient: GoogleApiClient? = null
     private var mLocationRequest: LocationRequest? = null
     private var mFusedLocationClient: FusedLocationProviderClient? = null
+
+    private var mBinder: IBinder = LocationBinder()
+
+    inner class LocationBinder : Binder() {
+        fun getService() : LocationService {
+            return this@LocationService
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -46,14 +55,19 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     override fun onBind(intent: Intent): IBinder {
-        TODO("Return the communication channel to the service.")
+        return mBinder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        return super.onUnbind(intent)
+    }
+
     override fun onDestroy() {
+        stopLocationUpdates()
         mGoogleApiClient?.disconnect()
     }
 
@@ -96,14 +110,26 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
             if (exception is ResolvableApiException){
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
-                val intent = Intent(ACTION_LOCATION).putExtra(KEY_LOCATION_EXCEPTION, exception)
-                sendBroadcast(intent)
+//                val intent = Intent(ACTION_LOCATION).putExtra(KEY_LOCATION_EXCEPTION, exception)
+//                sendBroadcast(intent)
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    exception.startResolutionForResult(mActivity, 2)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
             }
         }
     }
 
+    private var mActivity: Activity? = null
+    public fun setMainActivity(activity: Activity) {
+        mActivity = activity
+    }
+
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdate() {
+    public fun startLocationUpdate() {
         val task = mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
         Log.d(TAG, "startLocationUpdate task.isSuccessful: ${task.isSuccessful}")
         mIsLocationUpdating = true
@@ -123,19 +149,15 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
                 java.lang.Double.toString(location!!.latitude) + "," +
                 java.lang.Double.toString(location.longitude) + "," +
                 location.accuracy + "," +
-                location.extras.getInt("satellites") + "," +
-                location.extras.toString()
+                location.extras?.getInt("satellites") + "," +
+                location.extras?.toString()
         Log.d(TAG, "onLocationChanged: $msg")
 
-        val mAccuracy = location.accuracy.toDouble() // Get Accuracy
-        if (mAccuracy < GPS_ACCURACY_LEVEL) {    // Accuracy reached  < 5f. stop the location updates
-            stopLocationUpdates()
-        }
         val intent = Intent(ACTION_LOCATION).putExtra(KEY_UPDATED_LOCATION, location)
         sendBroadcast(intent)
     }
 
-    private fun stopLocationUpdates() {
+    public fun stopLocationUpdates() {
         if (mIsLocationUpdating) {
             Log.d(TAG, "stopLocationUpdates")
             mFusedLocationClient?.removeLocationUpdates(mLocationCallback)
