@@ -3,60 +3,39 @@ package com.kapplication.landsurvey.fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import com.kapplication.landsurvey.R
-import com.kapplication.landsurvey.adapter.ViewPagerAdatper
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_TYPE = "ARG_TYPE"
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [DrawerFragment.OnFragmentInteractionListener] interface
+ * [OperationFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [DrawerFragment.newInstance] factory method to
+ * Use the [OperationFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class DrawerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class OperationFragment : Fragment() {
+    private var mType: Int = 0
     private var listener: OnFragmentInteractionListener? = null
-
-    private var mViewPager: ViewPager? = null
-    private var mTabLayout: TabLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            mType = it.getInt(ARG_TYPE)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_drawer, container, false)
-        initView(view)
-        return view
-    }
-
-    private fun initView(view: View?) {
-        mViewPager = view?.findViewById(R.id.viewpager)
-        mViewPager?.adapter = ViewPagerAdatper(fragmentManager!!)
-
-        mTabLayout = view?.findViewById(R.id.tablayout)
+        return inflater.inflate(R.layout.fragment_operation, container, false)
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -99,17 +78,16 @@ class DrawerFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
+         * @param type Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment DrawerFragment.
+         * @return A new instance of fragment OperationFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                DrawerFragment().apply {
+        fun newInstance(type: Int) =
+                OperationFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putInt(ARG_TYPE, type)
                     }
                 }
     }

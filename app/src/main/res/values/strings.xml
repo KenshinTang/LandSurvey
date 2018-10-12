@@ -8,13 +8,14 @@
     <string name="permission_required_toast">Location permission is required for this application.</string>
 
     <!-- tab name of drawer -->
-    <string name="mode_automatic">Automatic mode</string>
-    <string name="mode_piling">Piling mode</string>
-    <string name="mode_manual">Manual mode</string>
+    <string name="mode_automatic">Automatic\nmode</string>
+    <string name="mode_piling">Piling\nmode</string>
+    <string name="mode_manual">Manual\nmode</string>
 
     <string name="action_setting">Settings</string>
 
+    <string name="measuring">Measuring</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="measuring">Measuring</string>
 </resources>

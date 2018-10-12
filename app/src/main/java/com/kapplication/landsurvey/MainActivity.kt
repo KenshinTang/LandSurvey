@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -110,6 +111,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         with(mDrawerLayout!!) {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
             setScrimColor(0)
+            setDrawerShadow(android.R.drawable.alert_dark_frame, Gravity.END)
         }
     }
 
