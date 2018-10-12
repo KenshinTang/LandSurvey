@@ -17,9 +17,7 @@
             android:background="#FF3B445A"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title=""
-            app:titleTextColor="@android:color/background_light">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -44,13 +42,12 @@
     <!-- The navigation drawer -->
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/f"
+        android:id="@+id/drawer_fragment"
         android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
         android:layout_width="360dp"
-        android:layout_height="match_parent"
+        android:layout_height="720dp"
         android:layout_gravity="start"
-        android:background="#FFF"
-        android:dividerHeight="0dp">
-
+        android:dividerHeight="0dp"
+        android:layout_marginTop="58dp">
     </fragment>
 </android.support.v4.widget.DrawerLayout>
