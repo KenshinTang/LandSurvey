@@ -8,6 +8,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mLocationService: LocationService? = null
     private var mBoundOnLocationService: Boolean = false
+
+    private var mDrawerLayout: DrawerLayout? = null
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -81,10 +84,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_main)
         mContext = this
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.title = ""
-        setSupportActionBar(toolbar)
-
+        initView()
 
         val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment?.getMapAsync(this)
@@ -99,6 +99,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
 
         bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun initView() {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = ""
+        setSupportActionBar(toolbar)
+
+        mDrawerLayout = findViewById(R.id.drawer_layout)
+        with(mDrawerLayout!!) {
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
+            setScrimColor(0)
+        }
     }
 
     override fun onResume() {
