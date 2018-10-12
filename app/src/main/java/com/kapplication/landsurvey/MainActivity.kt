@@ -82,8 +82,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mContext = this
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.title = ""
         setSupportActionBar(toolbar)
-
 
 
         val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
