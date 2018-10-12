@@ -19,7 +19,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/f"
         android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
-        android:layout_width="225dp"
+        android:layout_width="360dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#FFF"
