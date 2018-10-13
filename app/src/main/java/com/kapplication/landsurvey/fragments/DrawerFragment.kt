@@ -55,13 +55,13 @@ class DrawerFragment : Fragment() {
     }
 
     private fun initView(view: View?) {
-        val mTitles = arrayOf("Automatic\nmode", "Piling\nmode", "Manual\nmode")
+        val titles = arrayOf(getString(R.string.mode_automatic), getString(R.string.mode_piling), getString(R.string.mode_manual))
         mViewPager = view?.findViewById(R.id.viewpager)
 //        mViewPager?.adapter = ViewPagerAdatper(fragmentManager!!)
         val fragmentPagerItems = FragmentPagerItems.with(activity)
-                ?.add(mTitles[0], OperationFragment::class.java)
-                ?.add(mTitles[1], OperationFragment::class.java)
-                ?.add(mTitles[2], OperationFragment::class.java)
+                ?.add(titles[0], OperationFragment::class.java)
+                ?.add(titles[1], OperationFragment::class.java)
+                ?.add(titles[2], OperationFragment::class.java)
                 ?.create()
         mViewPager?.adapter = FragmentPagerItemAdapter(fragmentManager!!, fragmentPagerItems)
         mTabLayout = view?.findViewById(R.id.tablayout)

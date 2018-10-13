@@ -35,7 +35,12 @@ class OperationFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_operation, container, false)
+        val view = inflater.inflate(R.layout.fragment_operation, container, false)
+        initView(view)
+        return view
+    }
+
+    private fun initView(view: View?) {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
