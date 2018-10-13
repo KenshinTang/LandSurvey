@@ -3,15 +3,17 @@ package com.kapplication.landsurvey.fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.TextView
 import com.kapplication.landsurvey.R
-import com.kapplication.landsurvey.adapter.ViewPagerAdatper
+import com.ogaclejapan.smarttablayout.SmartTabLayout
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +36,7 @@ class DrawerFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
 
     private var mViewPager: ViewPager? = null
-    private var mTabLayout: TabLayout? = null
+    private var mTabLayout: SmartTabLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +55,27 @@ class DrawerFragment : Fragment() {
     }
 
     private fun initView(view: View?) {
+        val mTitles = arrayOf("Automatic\nmode", "Piling\nmode", "Manual\nmode")
         mViewPager = view?.findViewById(R.id.viewpager)
-        mViewPager?.adapter = ViewPagerAdatper(fragmentManager!!)
-
+//        mViewPager?.adapter = ViewPagerAdatper(fragmentManager!!)
+        val fragmentPagerItems = FragmentPagerItems.with(activity)
+                ?.add(mTitles[0], OperationFragment::class.java)
+                ?.add(mTitles[1], OperationFragment::class.java)
+                ?.add(mTitles[2], OperationFragment::class.java)
+                ?.create()
+        mViewPager?.adapter = FragmentPagerItemAdapter(fragmentManager!!, fragmentPagerItems)
         mTabLayout = view?.findViewById(R.id.tablayout)
+        with(mTabLayout!!) {
+            setCustomTabView{ container, position, adapter ->
+                val inflater = LayoutInflater.from(container.context)
+                val tab = inflater.inflate(R.layout.custom_tab, container, false)
+                val customText = tab.findViewById<View>(R.id.custom_tab) as TextView
+                customText.text = adapter.getPageTitle(position)
+                tab
+            }
+            setViewPager(mViewPager)
+
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
