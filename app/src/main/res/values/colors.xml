@@ -5,4 +5,5 @@
     <color name="colorAccent">#d81b60</color>
 
     <color name="tabColor">#BFBFBF</color>
+    <color name="defaultButtonColor">#3FD8B4</color>
 </resources>

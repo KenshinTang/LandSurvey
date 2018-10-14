@@ -4,11 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.kapplication.landsurvey.R
+import mehdi.sakout.fancybuttons.FancyButton
 
 private const val ARG_TYPE = "ARG_TYPE"
 
@@ -22,8 +24,14 @@ private const val ARG_TYPE = "ARG_TYPE"
  *
  */
 class OperationFragment : Fragment() {
+    private val TAG: String = "OperationFragment"
+
     private var mType: Int = 0
     private var listener: OnFragmentInteractionListener? = null
+
+    private var mButtonPiling: FancyButton? = null
+    private var mButtonUndoPiling: FancyButton? = null
+    private var mIsMeasuring: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,31 @@ class OperationFragment : Fragment() {
     }
 
     private fun initView(view: View?) {
+        mButtonPiling = view?.findViewById(R.id.imageButton_piling_start)
+        mButtonPiling?.setOnClickListener {
+            startPiling()
+        }
+
+        mButtonUndoPiling = view?.findViewById(R.id.imageButton_piling_undo)
+        mButtonUndoPiling?.setOnClickListener {
+            piling()
+        }
+    }
+
+    private fun startPiling() {
+        Log.d(TAG, "startPiling")
+        with(mButtonPiling!!) {
+            setBackgroundColor(ContextCompat.getColor(activity as Context, if (mIsMeasuring) R.color.defaultButtonColor else android.R.color.holo_red_light))
+            setIconResource(if (mIsMeasuring) R.drawable.btn_thumb_tack else R.drawable.history)
+            setText(getString(if (mIsMeasuring) R.string.start_piling else R.string.stop_piling))
+            mIsMeasuring = !mIsMeasuring
+        }
+    }
+
+    private fun piling() {
+        if (mIsMeasuring) {
+            
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
