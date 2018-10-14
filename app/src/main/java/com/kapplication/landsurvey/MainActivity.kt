@@ -186,6 +186,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             // Access to the location has been granted to the app.
             mGoogleMap.isMyLocationEnabled = true
+            mGoogleMap.uiSettings.isZoomControlsEnabled = true
+            mGoogleMap.uiSettings.isMapToolbarEnabled = true
         }
     }
 
