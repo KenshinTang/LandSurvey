@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +76,37 @@ class DrawerFragment : Fragment() {
             }
             setViewPager(mViewPager)
 
+            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    // TODO handle page change
+                    Log.w("kenshin", "position:$position")
+                    val fragment = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(position)
+                    val textView_Latlng = fragment.view?.findViewById<TextView>(R.id.textView_Latlng)
+                    when (position) {
+                        0 -> textView_Latlng?.text = "00.000000, 000.000000"
+                        1 -> textView_Latlng?.text = "11.111111, 111.111111"
+                        2 -> textView_Latlng?.text = "22.222222, 222.222222"
+                    }
+                }
+            })
+
+            setOnTabClickListener {
+                Log.e("kenshin", "position:$it")
+                val fragment = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(it)
+                val textView_Latlng = fragment?.view?.findViewById<TextView>(R.id.textView_Latlng)
+                when (it) {
+                    0 -> textView_Latlng?.text = "00.000000, 000.000000"
+                    1 -> textView_Latlng?.text = "11.111111, 111.111111"
+                    2 -> textView_Latlng?.text = "22.222222, 222.222222"
+                }
+            }
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     // TODO: Rename method, update argument and hook method into UI event
