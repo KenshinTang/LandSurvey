@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.kapplication.landsurvey.R
 import com.ogaclejapan.smarttablayout.SmartTabLayout
@@ -31,6 +32,8 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class DrawerFragment : Fragment() {
+    private val TAG: String = "DrawerFragment"
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -79,20 +82,13 @@ class DrawerFragment : Fragment() {
             setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    // TODO handle page change
-                    Log.w("kenshin", "position:$position")
-                    val fragment = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(position)
-                    val textView_Latlng = fragment.view?.findViewById<TextView>(R.id.textView_Latlng)
-                    when (position) {
-                        0 -> textView_Latlng?.text = "00.000000, 000.000000"
-                        1 -> textView_Latlng?.text = "11.111111, 111.111111"
-                        2 -> textView_Latlng?.text = "22.222222, 222.222222"
-                    }
+                    Log.i(TAG, "position:$position")
+                    switchOperationUI(position)
                 }
             })
 
             setOnTabClickListener {
-                Log.e("kenshin", "position:$it")
+                Log.e(TAG, "position:$it")
                 val fragment = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(it)
                 val textView_Latlng = fragment?.view?.findViewById<TextView>(R.id.textView_Latlng)
                 when (it) {
@@ -103,6 +99,27 @@ class DrawerFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun switchOperationUI(position: Int) {
+        val root = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(position)?.view
+        when (position) {
+            0 -> {
+                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.VISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.INVISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.INVISIBLE
+            }
+            1 -> {
+                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.INVISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.VISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.INVISIBLE
+            }
+            2 -> {
+                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.INVISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.INVISIBLE
+                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onResume() {

@@ -45,7 +45,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="GPS satellite connection is ready..."
+            android:text="@string/gps_is_ready"
             android:textColor="#3B445A"
             android:textSize="14sp"
             android:textAlignment="center"
@@ -99,7 +99,7 @@
             android:layout_marginStart="80dp"
             android:layout_marginBottom="15dp"
             android:textSize="14sp"
-            android:text="Area"
+            android:text="@string/area"
             android:textColor="#FF3B445A"
             app:layout_constraintBottom_toBottomOf="@+id/view_divider2"
             app:layout_constraintStart_toStartOf="parent" />
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="120dp"
             android:layout_marginBottom="15dp"
-            android:text="Perimeter"
+            android:text="@string/perimeter"
             android:textColor="#FF3B445A"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/view_divider2"
@@ -144,35 +144,138 @@
             app:layout_constraintStart_toEndOf="@+id/view_divider3"
             app:layout_constraintTop_toTopOf="@+id/view_divider1" />
 
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/imageButton_start_auto"
-            style="@style/Widget.AppCompat.ImageButton"
+        <LinearLayout
+            android:id="@+id/linear_auto_buttons"
             android:layout_width="300dp"
             android:layout_height="54dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_divider2"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider2">
 
-            android:paddingBottom="10dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="10dp"
-            fancy:fb_borderColor="#FFFFFF"
-            fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#3FB8D4"
-            fancy:fb_focusColor="#3FB8D4"
-            fancy:fb_iconResource="@drawable/play"
-            fancy:fb_iconPosition="left"
-            fancy:fb_radius="27dp"
-            fancy:fb_text="Start Measuring"
-            fancy:fb_textColor="#FFFFFF"
-            fancy:fb_textSize="18sp"
-            fancy:fb_iconPaddingTop="5dp"
-            fancy:fb_iconPaddingLeft="1dp"
-            />
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/imageButton_auto_start"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:paddingBottom="10dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#3FD8B4"
+                fancy:fb_focusColor="#3FD8B4"
+                fancy:fb_iconResource="@drawable/play"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="27dp"
+                fancy:fb_text="@string/start_measuring"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textSize="18sp"
+                fancy:fb_iconPaddingTop="5dp"
+                fancy:fb_iconPaddingLeft="1dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_piling_buttons"
+            android:layout_width="300dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider2">
+
+            <ImageView
+                android:id="@+id/imageButton_piling_undo"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:src="@drawable/undo"
+                android:clickable="true"
+                android:background="@android:color/transparent"
+                />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/imageButton_piling_start"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+
+                android:paddingBottom="10dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#3FD8B4"
+                fancy:fb_focusColor="#3FD8B4"
+                fancy:fb_iconResource="@drawable/btn_thumb_tack"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="27dp"
+                fancy:fb_text="@string/start_piling"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textSize="18sp"
+                fancy:fb_iconPaddingTop="5dp"
+                fancy:fb_iconPaddingLeft="1dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_manual_buttons"
+            android:layout_width="300dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_divider2">
+
+            <ImageView
+                android:id="@+id/imageButton_manual_undo"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:src="@drawable/undo"
+                android:clickable="true"
+                android:background="@android:color/transparent"
+                />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/imageButton_manual_start"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+
+                android:paddingBottom="10dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#3FD8B4"
+                fancy:fb_focusColor="#3FD8B4"
+                fancy:fb_iconResource="@drawable/hand"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="27dp"
+                fancy:fb_text="@string/start_manual"
+                fancy:fb_textColor="#FFFFFF"
+                fancy:fb_textSize="18sp"
+                fancy:fb_iconPaddingTop="5dp"
+                fancy:fb_iconPaddingLeft="1dp"/>
+        </LinearLayout>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/imageButton_show_history"
@@ -182,7 +285,7 @@
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton_start_auto"
+            app:layout_constraintTop_toBottomOf="@+id/linear_auto_buttons"
 
             android:paddingBottom="10dp"
             android:paddingStart="-40dp"

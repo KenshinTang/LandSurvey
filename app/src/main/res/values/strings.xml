@@ -16,6 +16,13 @@
 
     <string name="measuring">Measuring</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gps_is_ready">GPS satellite connection is ready…</string>
+    <string name="area">Area</string>
+    <string name="perimeter">Perimeter</string>
+    <string name="start_measuring">Start Measuring</string>
+    <string name="stop_measuring">Stop Measuring</string>
+    <string name="start_piling">Start Piling</string>
+    <string name="stop_piling">Stop Piling</string>
+    <string name="start_manual">Start hand</string>
+    <string name="stop_manual">Stop hand</string>
 </resources>
