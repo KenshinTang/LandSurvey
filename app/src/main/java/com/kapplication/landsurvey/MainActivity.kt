@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun hideVirtualKey() {
         val decorView: View = window.decorView
-        val uiOptions:Int = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION).or(View.SYSTEM_UI_FLAG_FULLSCREEN)
+        val uiOptions:Int = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION).or(View.SYSTEM_UI_FLAG_FULLSCREEN).or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         decorView.systemUiVisibility = uiOptions
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
