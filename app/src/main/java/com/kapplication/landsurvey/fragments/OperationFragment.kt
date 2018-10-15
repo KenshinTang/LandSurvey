@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.kapplication.landsurvey.R
 import mehdi.sakout.fancybuttons.FancyButton
 
@@ -30,7 +31,7 @@ class OperationFragment : Fragment() {
     private var listener: OnFragmentInteractionListener? = null
 
     private var mButtonPiling: FancyButton? = null
-    private var mButtonUndoPiling: FancyButton? = null
+    private var mButtonUndoPiling: ImageView? = null
     private var mIsMeasuring: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
