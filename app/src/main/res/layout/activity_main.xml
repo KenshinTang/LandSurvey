@@ -45,7 +45,7 @@
         android:id="@+id/drawer_fragment"
         android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
         android:layout_width="360dp"
-        android:layout_height="720dp"
+        android:layout_height="match_parent"
         android:layout_gravity="start"
         android:dividerHeight="0dp"
         android:layout_marginTop="56dp">

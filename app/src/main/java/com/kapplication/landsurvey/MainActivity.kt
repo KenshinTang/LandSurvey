@@ -12,9 +12,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -82,6 +80,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
+        hideVirtualKey()
+
         setContentView(R.layout.activity_main)
         mContext = this
 
@@ -100,6 +100,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
 
         bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun hideVirtualKey() {
+        val decorView: View = window.decorView
+        val uiOptions:Int = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION).or(View.SYSTEM_UI_FLAG_FULLSCREEN)
+        decorView.systemUiVisibility = uiOptions
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
 
     private fun initView() {

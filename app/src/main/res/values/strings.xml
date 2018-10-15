@@ -26,4 +26,6 @@
     <string name="start_manual">Start hand</string>
     <string name="stop_manual">Stop hand</string>
     <string name="precision">Precision</string>
+    <string name="satellite">Satellite</string>
+    <string name="points">Points</string>
 </resources>
