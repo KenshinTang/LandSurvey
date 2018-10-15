@@ -4,18 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.kapplication.landsurvey.R
-import com.ogaclejapan.smarttablayout.SmartTabLayout
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
-
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,9 +31,6 @@ class DrawerFragment : Fragment() {
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
-    private var mViewPager: ViewPager? = null
-    private var mTabLayout: SmartTabLayout? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,67 +48,7 @@ class DrawerFragment : Fragment() {
     }
 
     private fun initView(view: View?) {
-        val titles = arrayOf(getString(R.string.mode_automatic), getString(R.string.mode_piling), getString(R.string.mode_manual))
-        mViewPager = view?.findViewById(R.id.viewpager)
-//        mViewPager?.adapter = ViewPagerAdatper(fragmentManager!!)
-        val fragmentPagerItems = FragmentPagerItems.with(activity)
-                ?.add(titles[0], OperationFragment::class.java)
-                ?.add(titles[1], OperationFragment::class.java)
-                ?.add(titles[2], OperationFragment::class.java)
-                ?.create()
-        mViewPager?.adapter = FragmentPagerItemAdapter(fragmentManager!!, fragmentPagerItems)
-        mTabLayout = view?.findViewById(R.id.tablayout)
-        with(mTabLayout!!) {
-            setCustomTabView{ container, position, adapter ->
-                val inflater = LayoutInflater.from(container.context)
-                val tab = inflater.inflate(R.layout.custom_tab, container, false)
-                val customText = tab.findViewById<View>(R.id.custom_tab) as TextView
-                customText.text = adapter.getPageTitle(position)
-                tab
-            }
-            setViewPager(mViewPager)
 
-            setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    Log.i(TAG, "position:$position")
-                    switchOperationUI(position)
-                }
-            })
-
-            setOnTabClickListener {
-                Log.e(TAG, "position:$it")
-                val fragment = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(it)
-                val textView_Latlng = fragment?.view?.findViewById<TextView>(R.id.textView_Latlng)
-                when (it) {
-                    0 -> textView_Latlng?.text = "00.000000, 000.000000"
-                    1 -> textView_Latlng?.text = "11.111111, 111.111111"
-                    2 -> textView_Latlng?.text = "22.222222, 222.222222"
-                }
-            }
-        }
-
-    }
-
-    private fun switchOperationUI(position: Int) {
-        val root = (mViewPager?.adapter as FragmentPagerItemAdapter).getPage(position)?.view
-        when (position) {
-            0 -> {
-                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.VISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.INVISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.INVISIBLE
-            }
-            1 -> {
-                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.INVISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.VISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.INVISIBLE
-            }
-            2 -> {
-                root?.findViewById<LinearLayout>(R.id.linear_auto_buttons)?.visibility = View.INVISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_piling_buttons)?.visibility = View.INVISIBLE
-                root?.findViewById<LinearLayout>(R.id.linear_manual_buttons)?.visibility = View.VISIBLE
-            }
-        }
     }
 
     override fun onResume() {

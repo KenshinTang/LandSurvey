@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,58 +7,5 @@
     android:orientation="vertical"
     tools:context=".fragments.DrawerFragment">
 
-    <com.ogaclejapan.smarttablayout.SmartTabLayout
-        android:id="@+id/tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        app:stl_indicatorAlwaysInCenter="false"
-        app:stl_indicatorWithoutPadding="true"
-        app:stl_indicatorInFront="false"
-        app:stl_indicatorInterpolation="linear"
-        app:stl_indicatorGravity="top"
-        app:stl_indicatorColor="#3FD8B4"
-        app:stl_indicatorThickness="3dp"
-        app:stl_indicatorWidth="120dp"
-        app:stl_indicatorCornerRadius="2dp"
-        app:stl_overlineColor="#CCBFBFBF"
-        app:stl_overlineThickness="1dp"
-        app:stl_underlineColor="#CCBFBFBF"
-        app:stl_underlineThickness="1dp"
-        app:stl_dividerColor="#C5C5C5"
-        app:stl_dividerThickness="1dp"
-        app:stl_defaultTabBackground="@drawable/tab_background"
-        app:stl_defaultTabTextAllCaps="false"
-        app:stl_defaultTabTextColor="#3B445A"
-        app:stl_defaultTabTextSize="20sp"
-        app:stl_defaultTabTextHorizontalPadding="1dp"
-        app:stl_defaultTabTextMinWidth="120dp"
-        app:stl_distributeEvenly="false"
-        app:stl_clickable="true"
-        app:stl_titleOffset="0dp"
-        app:stl_drawDecorationAfterTab="false"
-        />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!--
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tablayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:background="#CCBFBFBF"
-            app:tabIndicatorColor="#3FD8B4"
-            app:tabIndicatorHeight="3dp"
-            app:tabMaxWidth="120dp"
-            app:tabMinWidth="120dp"
-            app:tabSelectedTextColor="#3FD8B4"
-            app:tabTextColor="#3B445A"
-            app:tabTextAppearance="@font/dinbold"/>
-            -->
-
-    </android.support.v4.view.ViewPager>
 
 </LinearLayout>
