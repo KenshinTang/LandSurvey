@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
@@ -35,13 +34,29 @@
             android:textSize="28sp" />
     </android.support.v7.widget.Toolbar>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/drawer_fragment"
-        android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
-        android:layout_width="360dp"
+    <LinearLayout
+        android:id="@+id/layout_drawer"
+        android:layout_width="408dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:layout_marginTop="56dp"
-        android:dividerHeight="0dp" />
+        android:orientation="horizontal"
+        android:layout_marginTop="56dp">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/drawer_fragment"
+            android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
+            android:layout_width="360dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:dividerHeight="0dp" />
+
+        <ImageView
+            android:id="@+id/imageView_drawer_handler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/arrow_left" />
+    </LinearLayout>
+
+
 </FrameLayout>

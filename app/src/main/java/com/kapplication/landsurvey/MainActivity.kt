@@ -1,6 +1,7 @@
 package com.kapplication.landsurvey
 
 import android.Manifest
+import android.animation.Animator
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
@@ -15,6 +16,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -39,6 +42,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mLocationService: LocationService? = null
     private var mBoundOnLocationService: Boolean = false
+
+    private var mDrawerLayout: LinearLayout? = null
+    private var mIsDrawerShowing = true
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -113,6 +119,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = ""
         setSupportActionBar(toolbar)
+
+        mDrawerLayout = findViewById(R.id.layout_drawer)
+
+        val drawerHandler: ImageView = findViewById(R.id.imageView_drawer_handler)
+        val viewPropertyAnimator = mDrawerLayout?.animate()
+        viewPropertyAnimator?.setListener(object: Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {}
+            override fun onAnimationCancel(p0: Animator?) {}
+            override fun onAnimationStart(p0: Animator?) {}
+
+            override fun onAnimationEnd(p0: Animator?) {
+                drawerHandler.setImageResource(if (mIsDrawerShowing) R.drawable.arrow_left else R.drawable.arrow_right)
+            }
+        })
+        drawerHandler.setOnClickListener {
+            viewPropertyAnimator?.translationX(if (mIsDrawerShowing) -360f else 0f)?.start()
+            mIsDrawerShowing = !mIsDrawerShowing
+        }
     }
 
     override fun onResume() {
