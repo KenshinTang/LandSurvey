@@ -8,11 +8,13 @@ import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,8 +39,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mLocationService: LocationService? = null
     private var mBoundOnLocationService: Boolean = false
-
-    private var mDrawerLayout: DrawerLayout? = null
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -113,13 +113,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = ""
         setSupportActionBar(toolbar)
-
-        mDrawerLayout = findViewById(R.id.drawer_layout)
-        with(mDrawerLayout!!) {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
-            setScrimColor(0)
-            setDrawerShadow(android.R.drawable.alert_dark_frame, Gravity.END)
-        }
     }
 
     override fun onResume() {
@@ -169,6 +162,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             unbindService(mConnection)
             mBoundOnLocationService = false
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
