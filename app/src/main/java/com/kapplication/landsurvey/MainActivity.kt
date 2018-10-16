@@ -18,6 +18,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
+import mehdi.sakout.fancybuttons.FancyButton
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -40,10 +42,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mLocationReceiver: LocationReceiver
     private var mCurrentLatLng: LatLng = CD
 
+    private var mPilingButton: FancyButton? = null
+    private var mStartStopButton: FancyButton? = null
+
     private var mLocationService: LocationService? = null
     private var mBoundOnLocationService: Boolean = false
 
     private var mIsDrawerShowing = true
+    private var mIsMeasuring = false
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -118,6 +124,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.title = ""
         setSupportActionBar(toolbar)
+
+        mPilingButton = findViewById(R.id.button_piling)
+        mStartStopButton = findViewById(R.id.button_start_stop)
 
         val drawerLayout: LinearLayout = findViewById(R.id.layout_drawer)
         val modeLayout: LinearLayout = findViewById(R.id.layout_mode)
@@ -210,7 +219,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         return true
     }
 
-
     private fun enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
@@ -258,5 +266,55 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun shouldShowRequestPermissionRationale(permission: String?): Boolean {
         return false
+    }
+
+    fun onButtonClick(view: View) {
+        if (view is RadioButton) {
+            val checked = view.isChecked
+
+            when (view.id) {
+                R.id.radio_auto -> {
+                    Log.d(TAG, "Change to auto mode.")
+                    mPilingButton?.isEnabled = false
+                }
+                R.id.radio_piling -> {
+                    Log.d(TAG, "Change to piling mode.")
+                    mPilingButton?.isEnabled = true
+                }
+                R.id.radio_manual -> {
+                    Log.d(TAG, "Change to manual mode.")
+                    mPilingButton?.isEnabled = false
+                }
+            }
+        } else if (view is FancyButton) {
+            when (view.id) {
+                R.id.button_piling -> {
+                    Log.d(TAG, "piling button clicked.")
+                }
+                R.id.button_start_stop -> {
+                    Log.d(TAG, "${if (mIsMeasuring) "stop" else "start"} button clicked.")
+                    if (!mIsMeasuring) {
+                        startMeasuring()
+                    } else {
+                        stopMeasuring()
+                    }
+                }
+                R.id.button_show_history -> {
+                    Log.d(TAG, "history button clicked.")
+                }
+            }
+        }
+    }
+
+    private fun startMeasuring() {
+        mStartStopButton?.setIconResource(R.drawable.stop)
+        mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
+        mIsMeasuring = true
+    }
+
+    private fun stopMeasuring() {
+        mStartStopButton?.setIconResource(R.drawable.start)
+        mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
+        mIsMeasuring = true
     }
 }

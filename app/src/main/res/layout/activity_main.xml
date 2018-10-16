@@ -75,8 +75,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:checkedButton="@id/radio_auto">
             <RadioButton
+                android:id="@+id/radio_auto"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="30dp"
@@ -84,23 +86,27 @@
                 android:fontFamily="@font/dinbold"
                 android:textColor="#FF3B445A"
                 android:textSize="18sp"
-                android:checked="true"/>
+                android:onClick="onButtonClick"/>
             <RadioButton
+                android:id="@+id/radio_piling"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:text="@string/mode_piling"
                 android:fontFamily="@font/dinbold"
                 android:textColor="#FF3B445A"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                android:onClick="onButtonClick"/>
             <RadioButton
+                android:id="@+id/radio_manual"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="25dp"
                 android:text="@string/mode_manual"
                 android:fontFamily="@font/dinbold"
                 android:textColor="#FF3B445A"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                android:onClick="onButtonClick"/>
         </RadioGroup>
 
         <mehdi.sakout.fancybuttons.FancyButton
@@ -110,15 +116,18 @@
             android:layout_height="54dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="28dp"
+            android:enabled="false"
 
             fancy:fb_borderColor="#FFFFFF"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#DFDDDD"
-            fancy:fb_focusColor="#3FD8B4"
+            fancy:fb_defaultColor="@color/defaultButtonColor"
+            fancy:fb_disabledColor="#DFDDDD"
             fancy:fb_radius="27dp"
             fancy:fb_text="Piling"
-            fancy:fb_textColor="#000000"
-            fancy:fb_textSize="18sp" />
+            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_disabledTextColor="#FFFFFF"
+            fancy:fb_textSize="18sp"
+            android:onClick="onButtonClick"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/button_start_stop"
@@ -131,8 +140,7 @@
             android:paddingStart="-20dp"
             fancy:fb_borderColor="#FFFFFF"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#3FD8B4"
-            fancy:fb_focusColor="#3FD8B4"
+            fancy:fb_defaultColor="@color/defaultButtonColor"
             fancy:fb_radius="27dp"
             fancy:fb_text="Start"
             fancy:fb_textColor="#FFFFFF"
@@ -141,8 +149,8 @@
             fancy:fb_iconPosition="left"
             fancy:fb_iconPaddingTop="5dp"
             fancy:fb_iconPaddingRight="0dp"
-            fancy:fb_iconPaddingLeft="1dp"/>
-
+            fancy:fb_iconPaddingLeft="1dp"
+            android:onClick="onButtonClick"/>
     </LinearLayout>
 
 </FrameLayout>
