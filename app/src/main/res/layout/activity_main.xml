@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
@@ -58,5 +60,89 @@
             app:srcCompat="@drawable/arrow_left" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_mode"
+        android:layout_width="760dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="17dp"
+        android:layout_gravity="bottom|end"
+        android:elevation="5dp"
+        android:orientation="horizontal"
+        android:background="@drawable/mode_layout_background">
+        
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="30dp"
+                android:text="@string/mode_automatic"
+                android:fontFamily="@font/dinbold"
+                android:textColor="#FF3B445A"
+                android:textSize="18sp"
+                android:checked="true"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:text="@string/mode_piling"
+                android:fontFamily="@font/dinbold"
+                android:textColor="#FF3B445A"
+                android:textSize="18sp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="25dp"
+                android:text="@string/mode_manual"
+                android:fontFamily="@font/dinbold"
+                android:textColor="#FF3B445A"
+                android:textSize="18sp"/>
+        </RadioGroup>
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/button_piling"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="130dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="28dp"
+
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#DFDDDD"
+            fancy:fb_focusColor="#3FD8B4"
+            fancy:fb_radius="27dp"
+            fancy:fb_text="Piling"
+            fancy:fb_textColor="#000000"
+            fancy:fb_textSize="18sp" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/button_start_stop"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="130dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="28dp"
+
+            android:paddingStart="-20dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#3FD8B4"
+            fancy:fb_focusColor="#3FD8B4"
+            fancy:fb_radius="27dp"
+            fancy:fb_text="Start"
+            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textSize="18sp"
+            fancy:fb_iconResource="@drawable/start"
+            fancy:fb_iconPosition="left"
+            fancy:fb_iconPaddingTop="5dp"
+            fancy:fb_iconPaddingRight="0dp"
+            fancy:fb_iconPaddingLeft="1dp"/>
+
+    </LinearLayout>
 
 </FrameLayout>

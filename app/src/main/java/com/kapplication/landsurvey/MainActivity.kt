@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mLocationService: LocationService? = null
     private var mBoundOnLocationService: Boolean = false
 
-    private var mDrawerLayout: LinearLayout? = null
     private var mIsDrawerShowing = true
 
     private inner class LocationReceiver : BroadcastReceiver() {
@@ -120,11 +119,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         toolbar.title = ""
         setSupportActionBar(toolbar)
 
-        mDrawerLayout = findViewById(R.id.layout_drawer)
-
+        val drawerLayout: LinearLayout = findViewById(R.id.layout_drawer)
+        val modeLayout: LinearLayout = findViewById(R.id.layout_mode)
         val drawerHandler: ImageView = findViewById(R.id.imageView_drawer_handler)
-        val viewPropertyAnimator = mDrawerLayout?.animate()
-        viewPropertyAnimator?.setListener(object: Animator.AnimatorListener {
+
+        val drawerLayoutAnimator = drawerLayout.animate()
+        val modeLayoutAnimator = modeLayout.animate()
+
+        drawerLayoutAnimator?.setListener(object: Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {}
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationStart(p0: Animator?) {}
@@ -134,7 +136,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
         drawerHandler.setOnClickListener {
-            viewPropertyAnimator?.translationX(if (mIsDrawerShowing) -360f else 0f)?.start()
+            drawerLayoutAnimator?.translationX(if (mIsDrawerShowing) -360f else 0f)?.start()
+            modeLayoutAnimator?.translationX(if (mIsDrawerShowing) -160f else 0f)?.start()
             mIsDrawerShowing = !mIsDrawerShowing
         }
     }
