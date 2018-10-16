@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import mehdi.sakout.fancybuttons.FancyButton
@@ -36,19 +37,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val REQUEST_CHECK_SETTINGS = 2
     private val CD = LatLng(30.542434, 104.073449)
 
-    private var mPermissionDenied = false
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
+
+    private var mLocationService: LocationService? = null
     private lateinit var mLocationReceiver: LocationReceiver
+
     private var mCurrentLatLng: LatLng = CD
+    private var mCurrentMode: Mode = Mode.AUTOMATIC
 
     private var mPilingButton: FancyButton? = null
     private var mStartStopButton: FancyButton? = null
 
-    private var mLocationService: LocationService? = null
-    private var mBoundOnLocationService: Boolean = false
-
+    private var mBoundOnLocationService = false
     private var mIsDrawerShowing = true
+    private var mPermissionDenied = false
     private var mIsMeasuring = false
 
     private inner class LocationReceiver : BroadcastReceiver() {
@@ -79,7 +82,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val binder = service as LocationService.LocationBinder
             mLocationService = binder.getService()
             mBoundOnLocationService = true
-            mLocationService?.setMainActivity(mContext as Activity)
+            mLocationService?.setMainActivity(mContext as MainActivity)
         }
 
         override fun onServiceDisconnected(componentName: ComponentName) {
@@ -276,14 +279,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 R.id.radio_auto -> {
                     Log.d(TAG, "Change to auto mode.")
                     mPilingButton?.isEnabled = false
+                    mCurrentMode = Mode.AUTOMATIC
                 }
                 R.id.radio_piling -> {
                     Log.d(TAG, "Change to piling mode.")
                     mPilingButton?.isEnabled = true
+                    mCurrentMode = Mode.PILING
                 }
                 R.id.radio_manual -> {
                     Log.d(TAG, "Change to manual mode.")
                     mPilingButton?.isEnabled = false
+                    mCurrentMode = Mode.MANUAL
                 }
             }
         } else if (view is FancyButton) {
@@ -316,5 +322,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mStartStopButton?.setIconResource(R.drawable.start)
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
         mIsMeasuring = true
+    }
+
+    fun test(location: Location) {
+        //TODO test location data.
+        Toast.makeText(this, "${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
     }
 }

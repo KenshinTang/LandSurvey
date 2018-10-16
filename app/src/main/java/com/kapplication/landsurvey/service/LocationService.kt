@@ -2,7 +2,6 @@ package com.kapplication.landsurvey.service
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Service
 import android.content.Intent
 import android.content.IntentSender
@@ -19,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import com.kapplication.landsurvey.MainActivity
 
 class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private val TAG = "LocationService"
@@ -123,8 +123,9 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
     }
 
-    private var mActivity: Activity? = null
-    public fun setMainActivity(activity: Activity) {
+    //TODO test location data.
+    private var mActivity: MainActivity? = null
+    public fun setMainActivity(activity: MainActivity) {
         mActivity = activity
     }
 
@@ -155,6 +156,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
 
         val intent = Intent(ACTION_LOCATION).putExtra(KEY_UPDATED_LOCATION, location)
         sendBroadcast(intent)
+        mActivity?.test(location)
     }
 
     public fun stopLocationUpdates() {
