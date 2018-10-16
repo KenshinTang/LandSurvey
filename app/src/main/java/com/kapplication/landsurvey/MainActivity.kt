@@ -325,7 +325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun test(location: Location) {
-        //TODO test location data.
+        //TODO test location data.  this should be a interface callback
         Toast.makeText(this, "${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
     }
 }
