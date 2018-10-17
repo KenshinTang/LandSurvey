@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -84,7 +85,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         lastLocation.addOnSuccessListener { location: Location? ->
             Log.i(TAG, "last location(${location?.latitude}, ${location?.longitude})")
             val intent = Intent(ACTION_LOCATION).putExtra(KEY_LAST_LOCATION, location)
-            sendBroadcast(intent)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
 
         //check if the gps setting is on, if not, popup a dialog to switch it on
@@ -111,7 +112,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
 //                val intent = Intent(ACTION_LOCATION).putExtra(KEY_LOCATION_EXCEPTION, exception)
-//                sendBroadcast(intent)
+//                LocalBroadcastManager.getInstance(this).
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
@@ -155,8 +156,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         Log.d(TAG, "onLocationChanged: $msg")
 
         val intent = Intent(ACTION_LOCATION).putExtra(KEY_UPDATED_LOCATION, location)
-        sendBroadcast(intent)
-        mActivity?.test(location)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     public fun stopLocationUpdates() {

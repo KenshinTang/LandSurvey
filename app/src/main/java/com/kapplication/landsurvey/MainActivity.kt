@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         mLocationReceiver = LocationReceiver()
-        registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
 
         bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
     }
@@ -195,7 +196,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
 
-        unregisterReceiver(mLocationReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocationReceiver)
 
         if (mBoundOnLocationService) {
             unbindService(mConnection)
@@ -322,10 +323,5 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mStartStopButton?.setIconResource(R.drawable.start)
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
         mIsMeasuring = true
-    }
-
-    fun test(location: Location) {
-        //TODO test location data.  this should be a interface callback
-        Toast.makeText(this, "${location.latitude}, ${location.longitude}", Toast.LENGTH_SHORT).show()
     }
 }
