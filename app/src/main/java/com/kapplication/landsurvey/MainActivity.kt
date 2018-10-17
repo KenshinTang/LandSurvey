@@ -17,19 +17,20 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import mehdi.sakout.fancybuttons.FancyButton
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
 
+    private var mMarker: BitmapDescriptor? = null
     private var mLocationService: LocationService? = null
     private lateinit var mLocationReceiver: LocationReceiver
 
@@ -49,11 +51,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var mPilingButton: FancyButton? = null
     private var mStartStopButton: FancyButton? = null
+    private var mSatelliteTextView: TextView? = null
+    private var mPrecisionTextView: TextView? = null
+    private var mPointsTextView: TextView? = null
+    private var mAreaTextView: TextView? = null
+    private var mPerimeterTextView: TextView? = null
+    private var mLatLngTextView: TextView? = null
 
     private var mBoundOnLocationService = false
     private var mIsDrawerShowing = true
     private var mPermissionDenied = false
     private var mIsMeasuring = false
+
+    private val mPoints: LinkedList<LatLng> = LinkedList()
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -63,14 +73,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
                     if (location != null) {
+                        updateUI(location)
                         mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 17f))
                     }
                 }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(location.latitude, location.longitude)
-//                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
+                    updateUI(location)
+                    if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
+                        mPoints.add(mCurrentLatLng)
+                        mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
+                    }
                 }
             }
         }
@@ -102,9 +117,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initView()
 
-        val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment?.getMapAsync(this)
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
@@ -131,6 +143,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mPilingButton = findViewById(R.id.button_piling)
         mStartStopButton = findViewById(R.id.button_start_stop)
+        mSatelliteTextView = findViewById(R.id.textView_satellite_content)
+        mPrecisionTextView = findViewById(R.id.textView_precision_content)
+        mPointsTextView = findViewById(R.id.textView_points_content)
+        mAreaTextView = findViewById(R.id.textView_area_content)
+        mPerimeterTextView = findViewById(R.id.textView_perimeter_content)
+        mLatLngTextView = findViewById(R.id.textView_latlng)
+
+        mMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker)
 
         val drawerLayout: LinearLayout = findViewById(R.id.layout_drawer)
         val modeLayout: LinearLayout = findViewById(R.id.layout_mode)
@@ -153,6 +173,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             modeLayoutAnimator?.translationX(if (mIsDrawerShowing) -160f else 0f)?.start()
             mIsDrawerShowing = !mIsDrawerShowing
         }
+
+        val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment?.getMapAsync(this)
     }
 
     override fun onResume() {
@@ -184,12 +207,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             setOnMyLocationClickListener {
                 Toast.makeText(mContext, "Current location: ${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
             }
+
+            setOnMapLongClickListener {
+                if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
+                    mPoints.add(it)
+                    mGoogleMap.addMarker(MarkerOptions().position(it).icon(mMarker))
+                }
+            }
         }
 
         enableMyLocation()
     }
 
     override fun onPause() {
+        Log.i(TAG, "onPause")
         super.onPause()
     }
 
@@ -279,18 +310,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             when (view.id) {
                 R.id.radio_auto -> {
                     Log.d(TAG, "Change to auto mode.")
-                    mPilingButton?.isEnabled = false
                     mCurrentMode = Mode.AUTOMATIC
+                    mPilingButton?.isEnabled = false
                 }
                 R.id.radio_piling -> {
                     Log.d(TAG, "Change to piling mode.")
-                    mPilingButton?.isEnabled = true
                     mCurrentMode = Mode.PILING
+                    mPilingButton?.isEnabled = true
                 }
                 R.id.radio_manual -> {
                     Log.d(TAG, "Change to manual mode.")
-                    mPilingButton?.isEnabled = false
                     mCurrentMode = Mode.MANUAL
+                    mPilingButton?.isEnabled = false
                 }
             }
         } else if (view is FancyButton) {
@@ -315,13 +346,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun startMeasuring() {
         mStartStopButton?.setIconResource(R.drawable.stop)
+        mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
         mIsMeasuring = true
     }
 
     private fun stopMeasuring() {
         mStartStopButton?.setIconResource(R.drawable.start)
+        mStartStopButton?.setText(resources.getString(R.string.start_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
         mIsMeasuring = true
+    }
+
+    private fun updateUI(location: Location?) {
+        location ?: return
+        var satelliteNums = location.extras?.getInt("satellites", 0)
+        if (satelliteNums == null) {
+            satelliteNums = 0
+        }
+        mSatelliteTextView?.text = satelliteNums.toString()
+        mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
+        mLatLngTextView?.text = (location.latitude.toString() + ", " + location.longitude.toString())
     }
 }

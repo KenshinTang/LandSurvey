@@ -94,8 +94,8 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
 
     private fun checkLocationSettings() {
         mLocationRequest = LocationRequest().apply {
-            interval = 10000
-            fastestInterval = 5000
+            interval = 1000 * 20
+            fastestInterval = 1000 * 10
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
