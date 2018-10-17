@@ -5,6 +5,7 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
@@ -22,22 +23,23 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import com.google.maps.android.SphericalUtil
 import com.kapplication.landsurvey.model.Mode
+import com.kapplication.landsurvey.model.Path
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import mehdi.sakout.fancybuttons.FancyButton
-import java.util.*
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeListener, GoogleMap.OnMarkerClickListener {
+
     private val TAG: String = "MainActivity"
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private val REQUEST_CHECK_SETTINGS = 2
     private val CD = LatLng(30.542434, 104.073449)
+    private val COLOR_LINE = Color.rgb(56,148,255)
+    private val COLOR_AREA = Color.argb(100, 56,148,255)
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
@@ -57,17 +59,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mAreaTextView: TextView? = null
     private var mPerimeterTextView: TextView? = null
     private var mLatLngTextView: TextView? = null
+    private var mPolyline: Polyline? = null
+    private var mPolygon: Polygon? = null
 
     private var mBoundOnLocationService = false
     private var mIsDrawerShowing = true
     private var mPermissionDenied = false
     private var mIsMeasuring = false
 
-    private val mPoints: LinkedList<LatLng> = LinkedList()
+    private val mPath: Path = Path()
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "LocationReceiver(${intent})")
+            Log.d(TAG, "LocationReceiver($intent)")
             val extras = intent.extras
             when {
                 extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null) {
                         updateUI(location)
                         mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 17f))
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
                     }
                 }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
@@ -83,7 +87,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mCurrentLatLng = LatLng(location.latitude, location.longitude)
                     updateUI(location)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
-                        mPoints.add(mCurrentLatLng)
+                        mPath.add(mCurrentLatLng)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
                     }
                 }
@@ -114,6 +118,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setContentView(R.layout.activity_main)
         mContext = this
+        mPath.setOnPathChangeListener(this)
 
         initView()
 
@@ -198,6 +203,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mGoogleMap = map
 
         with(mGoogleMap) {
+            setOnMarkerClickListener(this@MainActivity)
+
             setOnMyLocationButtonClickListener {
                 Toast.makeText(mContext, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
@@ -210,7 +217,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
             setOnMapLongClickListener {
                 if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
-                    mPoints.add(it)
+                    mPath.add(it)
                     mGoogleMap.addMarker(MarkerOptions().position(it).icon(mMarker))
                 }
             }
@@ -355,7 +362,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mStartStopButton?.setIconResource(R.drawable.start)
         mStartStopButton?.setText(resources.getString(R.string.start_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
-        mIsMeasuring = true
+        mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
+        mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
+        mPolygon = mGoogleMap.addPolygon(PolygonOptions()
+                .addAll(mPath.getList())
+                .fillColor(COLOR_AREA)
+                .strokeWidth(4f)
+                .strokeColor(COLOR_LINE)
+        )
+        mPath.print()
+        mIsMeasuring = false
+
     }
 
     private fun updateUI(location: Location?) {
@@ -367,5 +384,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mSatelliteTextView?.text = satelliteNums.toString()
         mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
         mLatLngTextView?.text = (location.latitude.toString() + ", " + location.longitude.toString())
+    }
+
+    override fun onPathChanged() {
+        mPolyline?.remove()
+        mPolygon?.remove()
+        mPolyline = mGoogleMap.addPolyline(PolylineOptions().addAll(mPath.getList()).width(4f).color(COLOR_LINE))
+        mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
+        mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
+        mPointsTextView?.text = mPath.getList().size.toString()
+    }
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        if (mIsMeasuring) {
+            marker?.remove()
+            mPath.remove(marker?.position!!)
+        }
+        return true
     }
 }
