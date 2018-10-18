@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                 extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
                     if (location != null) {
-                        updateUI(location)
+                        updateUI(location, true)
                         mCurrentLatLng = LatLng(location.latitude, location.longitude)
                         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
                     }
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
                     val location = intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                    updateUI(location)
+                    updateUI(location, false)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -375,7 +375,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
 
     }
 
-    private fun updateUI(location: Location?) {
+    private fun updateUI(location: Location?, first: Boolean) {
         location ?: return
         var satelliteNums = location.extras?.getInt("satellites", 0)
         if (satelliteNums == null) {
@@ -383,7 +383,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         }
         mSatelliteTextView?.text = satelliteNums.toString()
         mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
-        mLatLngTextView?.text = (location.latitude.toString() + ", " + location.longitude.toString())
+        if (first) {
+            mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
+        }
     }
 
     override fun onPathChanged() {
@@ -393,6 +395,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
         mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
         mPointsTextView?.text = mPath.getList().size.toString()
+        mLatLngTextView?.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
+                String.format("%.6f", mPath.getList().last?.longitude)
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
