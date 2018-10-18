@@ -19,7 +19,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.TextView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -209,14 +212,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             setOnMarkerClickListener(this@MainActivity)
 
             setOnMyLocationButtonClickListener {
-                Toast.makeText(mContext, "MyLocation button clicked", Toast.LENGTH_SHORT).show()
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 16f))
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
                 true
             }
 
-            setOnMyLocationClickListener {
-                Toast.makeText(mContext, "Current location: ${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
-            }
+//            setOnMyLocationClickListener {
+//                Toast.makeText(mContext, "Current location: ${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
+//            }
 
             setOnMapLongClickListener {
                 if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
@@ -270,8 +272,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         } else {
             // Access to the location has been granted to the app.
             mGoogleMap.isMyLocationEnabled = true
+            mGoogleMap.uiSettings.isMyLocationButtonEnabled = true
             mGoogleMap.uiSettings.isZoomControlsEnabled = true
-            mGoogleMap.uiSettings.isMapToolbarEnabled = true
         }
     }
 
