@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
     private lateinit var mLocationReceiver: LocationReceiver
 
     private var mCurrentLatLng: LatLng = CD
+    private var mCurrentLocation: Location? = null
     private var mCurrentMode: Mode = Mode.AUTOMATIC
 
     private var mPilingButton: FancyButton? = null
@@ -75,17 +76,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             val extras = intent.extras
             when {
                 extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
-                    val location = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
-                    if (location != null) {
-                        updateUI(location, true)
-                        mCurrentLatLng = LatLng(location.latitude, location.longitude)
+                    mCurrentLocation = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
+                    if (mCurrentLocation != null) {
+                        updateUI(mCurrentLocation, true)
+                        mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
                         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
                     }
                 }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
-                    val location = intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
-                    mCurrentLatLng = LatLng(location.latitude, location.longitude)
-                    updateUI(location, false)
+                    mCurrentLocation= intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
+                    mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
+                    updateUI(mCurrentLocation, false)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
                         mPath.add(mCurrentLatLng, 2)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -335,6 +336,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             when (view.id) {
                 R.id.button_piling -> {
                     Log.d(TAG, "piling button clicked.")
+                    updateUI(mCurrentLocation, false)
+                    if (mIsMeasuring) {
+                        mPath.add(mCurrentLatLng)
+                        mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
+                    }
                 }
                 R.id.button_start_stop -> {
                     Log.d(TAG, "${if (mIsMeasuring) "stop" else "start"} button clicked.")
@@ -395,8 +401,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
         mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
         mPointsTextView?.text = mPath.getList().size.toString()
-        mLatLngTextView?.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
-                String.format("%.6f", mPath.getList().last?.longitude)
+        if (!mPath.getList().isEmpty()) {
+            mLatLngTextView?.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
+                    String.format("%.6f", mPath.getList().last?.longitude)
+        }
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
