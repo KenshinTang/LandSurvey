@@ -359,6 +359,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                     Log.d(TAG, "history button clicked.")
                 }
             }
+        } else if (view is ImageView) {
+            when (view.id) {
+                R.id.imageView_map_switcher -> {
+                    if (mGoogleMap.mapType == GoogleMap.MAP_TYPE_SATELLITE) {
+                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+                    } else if (mGoogleMap.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                    }
+                }
+            }
         }
     }
 

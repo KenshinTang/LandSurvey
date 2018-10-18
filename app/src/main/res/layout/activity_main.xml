@@ -154,4 +154,14 @@
             android:onClick="onButtonClick"/>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView_map_switcher"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/map_type_switcher"
+        android:onClick="onButtonClick"/>
+
 </FrameLayout>
