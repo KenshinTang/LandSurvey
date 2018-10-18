@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                     mCurrentLatLng = LatLng(location.latitude, location.longitude)
                     updateUI(location, false)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
-                        mPath.add(mCurrentLatLng)
+                        mPath.add(mCurrentLatLng, 2)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
                     }
                 }

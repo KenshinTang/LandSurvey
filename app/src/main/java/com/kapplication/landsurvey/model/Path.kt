@@ -2,6 +2,7 @@ package com.kapplication.landsurvey.model
 
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import java.util.*
 
 class Path {
@@ -21,6 +22,15 @@ class Path {
     fun add(point: LatLng) {
         mList.add(point)
         mListener?.onPathChanged()
+    }
+
+    // add point to list only if the distance is larger tan $limit meter
+    fun add(point: LatLng, limit: Int) {
+        if (mList.isEmpty()) {
+            add(point)
+        } else if (SphericalUtil.computeDistanceBetween(point, mList.last) > limit) {
+            add(point)
+        }
     }
 
     fun remove() {

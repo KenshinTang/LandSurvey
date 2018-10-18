@@ -126,7 +126,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
 
     //TODO test location data. this should be a interface callback
     private var mActivity: MainActivity? = null
-    public fun setMainActivity(activity: MainActivity) {
+    fun setMainActivity(activity: MainActivity) {
         mActivity = activity
     }
 
