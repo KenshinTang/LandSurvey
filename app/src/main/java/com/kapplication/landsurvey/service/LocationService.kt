@@ -52,6 +52,13 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
                 .addApi(LocationServices.API)
                 .build()
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mLocationRequest = LocationRequest().apply {
+            interval = 1000 * 2
+            fastestInterval = 1000 * 2
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
         mGoogleApiClient?.connect()
     }
 
@@ -77,34 +84,30 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
+//
+//        //get my location by request last location.
+//        val lastLocation = mFusedLocationClient!!.lastLocation
+//        lastLocation.addOnSuccessListener { location: Location? ->
+//            Log.i(TAG, "get last location(${location?.latitude}, ${location?.longitude})")
+//            val intent = Intent(ACTION_LOCATION).putExtra(KEY_LAST_LOCATION, location)
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+//        }
+//
+//        lastLocation.addOnFailureListener {
+//            Log.w(TAG, "get last location failed.)")
+//        }
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        //get my location by request last location.
-        val lastLocation = mFusedLocationClient!!.lastLocation
-        lastLocation.addOnSuccessListener { location: Location? ->
-            Log.i(TAG, "last location(${location?.latitude}, ${location?.longitude})")
-            val intent = Intent(ACTION_LOCATION).putExtra(KEY_LAST_LOCATION, location)
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-        }
-
-        //check if the gps setting is on, if not, popup a dialog to switch it on
-        checkLocationSettings()
+        startLocationUpdate()
     }
 
-    private fun checkLocationSettings() {
-        mLocationRequest = LocationRequest().apply {
-            interval = 1000 * 2
-            fastestInterval = 1000 * 2
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
+    fun startLocationUpdate() {
+        //check if the gps setting is on, if not, popup a dialog to switch it on
         val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest!!)
         val client: SettingsClient = LocationServices.getSettingsClient(this)
         val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener { _ ->
-            startLocationUpdate()
+            requestLocation()
         }
 
         task.addOnFailureListener { exception ->
@@ -131,10 +134,12 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     @SuppressLint("MissingPermission")
-    public fun startLocationUpdate() {
-        val task = mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
-        Log.d(TAG, "startLocationUpdate task.isSuccessful: ${task.isSuccessful}")
-        mIsLocationUpdating = true
+    fun requestLocation() {
+        if (!mIsLocationUpdating) {
+            val task = mFusedLocationClient!!.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
+            Log.d(TAG, "requestLocation task.isSuccessful: ${task.isSuccessful}")
+            mIsLocationUpdating = true
+        }
     }
 
     private var mLocationCallback: LocationCallback = object : LocationCallback() {
@@ -159,7 +164,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
-    public fun stopLocationUpdates() {
+    fun stopLocationUpdates() {
         if (mIsLocationUpdating) {
             Log.d(TAG, "stopLocationUpdates")
             mFusedLocationClient?.removeLocationUpdates(mLocationCallback)

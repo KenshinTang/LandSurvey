@@ -3,6 +3,7 @@ package com.kapplication.landsurvey
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
     private var mIsDrawerShowing = true
     private var mPermissionDenied = false
     private var mIsMeasuring = false
+    private var mIsGetLocationFirstTime = true
 
     private val mPath: Path = Path()
 
@@ -75,18 +77,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             Log.d(TAG, "LocationReceiver($intent)")
             val extras = intent.extras
             when {
-                extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
-                    mCurrentLocation = intent.getParcelableExtra<Location>(LocationService.KEY_LAST_LOCATION)
-                    if (mCurrentLocation != null) {
-                        updateUI(mCurrentLocation, true)
-                        mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
-                    }
-                }
+//                extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
+//                    mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_LAST_LOCATION)
+//                    if (mCurrentLocation != null) {
+//                        updateUI(mCurrentLocation, true)
+//                        mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
+//                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
+//                    }
+//                }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
-                    mCurrentLocation= intent.getParcelableExtra<Location>(LocationService.KEY_UPDATED_LOCATION)
+                    mCurrentLocation= intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
-                    updateUI(mCurrentLocation, false)
+                    updateUI(mCurrentLocation)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
                         mPath.add(mCurrentLatLng, 2)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -280,6 +282,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                 if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     // Enable the my location layer if the permission has been granted.
                     enableMyLocation()
+                    mLocationService?.startLocationUpdate()
                 } else {
                     // Display the missing permission error dialog when the fragments resume.
                     mPermissionDenied = true
@@ -336,7 +339,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             when (view.id) {
                 R.id.button_piling -> {
                     Log.d(TAG, "piling button clicked.")
-                    updateUI(mCurrentLocation, false)
+                    updateUI(mCurrentLocation)
                     if (mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -370,18 +373,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
         mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
         mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
-        mPolygon = mGoogleMap.addPolygon(PolygonOptions()
-                .addAll(mPath.getList())
-                .fillColor(COLOR_AREA)
-                .strokeWidth(4f)
-                .strokeColor(COLOR_LINE)
-        )
+        if (!mPath.getList().isEmpty()) {
+            mPolygon = mGoogleMap.addPolygon(PolygonOptions()
+                    .addAll(mPath.getList())
+                    .fillColor(COLOR_AREA)
+                    .strokeWidth(4f)
+                    .strokeColor(COLOR_LINE)
+            )
+        }
         mPath.print()
         mIsMeasuring = false
 
+        AlertDialog.Builder(this).setMessage("save?")
+                .setPositiveButton("yes") { _: DialogInterface, _: Int ->
+                    mGoogleMap.clear()
+                    mPath.clear()
+                }.setNegativeButton("no") { _: DialogInterface, _: Int ->
+//                    mGoogleMap.clear()
+//                    mPath.clear()
+                }.create().show()
     }
 
-    private fun updateUI(location: Location?, first: Boolean) {
+    private fun updateUI(location: Location?) {
         location ?: return
         var satelliteNums = location.extras?.getInt("satellites", 0)
         if (satelliteNums == null) {
@@ -389,8 +402,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         }
         mSatelliteTextView?.text = satelliteNums.toString()
         mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
-        if (first) {
+        if (mIsGetLocationFirstTime) {
             mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
+            mIsGetLocationFirstTime = false
         }
     }
 
