@@ -3,7 +3,7 @@ package com.kapplication.landsurvey
 import android.Manifest
 import android.animation.Animator
 import android.app.Activity
-import android.app.AlertDialog
+import android.app.DialogFragment
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -29,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
+import com.kapplication.landsurvey.fragments.SaveDialogFragment
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.model.Path
 import com.kapplication.landsurvey.service.LocationService
@@ -36,7 +37,11 @@ import com.kapplication.landsurvey.utils.PermissionUtils
 import mehdi.sakout.fancybuttons.FancyButton
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeListener, GoogleMap.OnMarkerClickListener {
+class MainActivity : AppCompatActivity(),
+        OnMapReadyCallback,
+        Path.OnPathChangeListener,
+        GoogleMap.OnMarkerClickListener,
+        SaveDialogFragment.SaveDialogListener {
 
     private val TAG: String = "MainActivity"
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -317,28 +322,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
     }
 
     fun onButtonClick(view: View) {
-        if (view is RadioButton) {
-            val checked = view.isChecked
+        when (view) {
+            is RadioButton -> {
+                val checked = view.isChecked
 
-            when (view.id) {
-                R.id.radio_auto -> {
-                    Log.d(TAG, "Change to auto mode.")
-                    mCurrentMode = Mode.AUTOMATIC
-                    mPilingButton?.isEnabled = false
-                }
-                R.id.radio_piling -> {
-                    Log.d(TAG, "Change to piling mode.")
-                    mCurrentMode = Mode.PILING
-                    mPilingButton?.isEnabled = true
-                }
-                R.id.radio_manual -> {
-                    Log.d(TAG, "Change to manual mode.")
-                    mCurrentMode = Mode.MANUAL
-                    mPilingButton?.isEnabled = false
+                when (view.id) {
+                    R.id.radio_auto -> {
+                        Log.d(TAG, "Change to auto mode.")
+                        mCurrentMode = Mode.AUTOMATIC
+                        mPilingButton?.isEnabled = false
+                    }
+                    R.id.radio_piling -> {
+                        Log.d(TAG, "Change to piling mode.")
+                        mCurrentMode = Mode.PILING
+                        mPilingButton?.isEnabled = true
+                    }
+                    R.id.radio_manual -> {
+                        Log.d(TAG, "Change to manual mode.")
+                        mCurrentMode = Mode.MANUAL
+                        mPilingButton?.isEnabled = false
+                    }
                 }
             }
-        } else if (view is FancyButton) {
-            when (view.id) {
+            is FancyButton -> when (view.id) {
                 R.id.button_piling -> {
                     Log.d(TAG, "piling button clicked.")
                     updateUI(mCurrentLocation)
@@ -359,8 +365,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
                     Log.d(TAG, "history button clicked.")
                 }
             }
-        } else if (view is ImageView) {
-            when (view.id) {
+            is ImageView -> when (view.id) {
                 R.id.imageView_map_switcher -> {
                     if (mGoogleMap.mapType == GoogleMap.MAP_TYPE_SATELLITE) {
                         mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -396,14 +401,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
         mPath.print()
         mIsMeasuring = false
 
-        AlertDialog.Builder(this).setMessage("save?")
-                .setPositiveButton("yes") { _: DialogInterface, _: Int ->
-                    mGoogleMap.clear()
-                    mPath.clear()
-                }.setNegativeButton("no") { _: DialogInterface, _: Int ->
-//                    mGoogleMap.clear()
-//                    mPath.clear()
-                }.create().show()
+        showSaveDialog()
     }
 
     private fun updateUI(location: Location?) {
@@ -440,5 +438,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Path.OnPathChangeL
             mPath.remove(marker?.position!!)
         }
         return true
+    }
+
+    private fun showSaveDialog() {
+        val dialog = SaveDialogFragment()
+        dialog.show(fragmentManager, "NoticeDialogFragment")
+    }
+
+    override fun onSaveClick(dialog: DialogFragment, fileName: String) {
+        Log.i(TAG, "onSaveClick($fileName)")
+        mGoogleMap.clear()
+        mPath.clear()
+    }
+
+    override fun onCancelClick(dialog: DialogFragment) {
+        Log.i(TAG, "onCancelClick")
     }
 }

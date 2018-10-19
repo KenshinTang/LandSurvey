@@ -7,4 +7,5 @@
     <color name="tabColor">#BFBFBF</color>
     <color name="defaultButtonColor">#3FD8B4</color>
     <color name="stopButtonColor">#F76D52</color>
+    <color name="textColor">#FF3B445A</color>
 </resources>
