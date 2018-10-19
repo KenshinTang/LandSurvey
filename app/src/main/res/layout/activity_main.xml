@@ -47,7 +47,7 @@
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/drawer_fragment"
-            android:name="com.kapplication.landsurvey.fragments.DrawerFragment"
+            android:name="com.kapplication.landsurvey.fragments.MainDrawerFragment"
             android:layout_width="360dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"

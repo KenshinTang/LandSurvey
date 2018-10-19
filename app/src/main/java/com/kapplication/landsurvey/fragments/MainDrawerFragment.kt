@@ -17,14 +17,14 @@ private const val ARG_PARAM2 = "param2"
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [DrawerFragment.OnFragmentInteractionListener] interface
+ * [MainDrawerFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [DrawerFragment.newInstance] factory method to
+ * Use the [MainDrawerFragment.newInstance] factory method to
  * create an instance of this fragment.
  *
  */
-class DrawerFragment : Fragment() {
-    private val TAG: String = "DrawerFragment"
+class MainDrawerFragment : Fragment() {
+    private val TAG: String = "MainDrawerFragment"
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -97,12 +97,12 @@ class DrawerFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment DrawerFragment.
+         * @return A new instance of fragment MainDrawerFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-                DrawerFragment().apply {
+                MainDrawerFragment().apply {
                     arguments = Bundle().apply {
                         putString(ARG_PARAM1, param1)
                         putString(ARG_PARAM2, param2)

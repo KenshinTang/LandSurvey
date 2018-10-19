@@ -15,7 +15,7 @@
         android:layout_width="360dp"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        tools:context=".fragments.DrawerFragment">
+        tools:context=".fragments.MainDrawerFragment">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/clayout_gps_info"
