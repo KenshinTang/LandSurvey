@@ -363,6 +363,9 @@ class MainActivity : AppCompatActivity(),
                 }
                 R.id.button_show_history -> {
                     Log.d(TAG, "history button clicked.")
+//                    val list = ListDrawerFragment.newInstance(1)
+//                    supportFragmentManager.beginTransaction().replace(R.id.drawer_fragment, list)
+//                            .addToBackStack(null).commit()
                 }
             }
             is ImageView -> when (view.id) {
