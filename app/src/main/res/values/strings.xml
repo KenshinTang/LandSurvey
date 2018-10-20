@@ -29,4 +29,6 @@
     <string name="satellite">Satellite</string>
     <string name="points">Points</string>
     <string name="save">Save</string>
+    <string name="history_record">History Record</string>
+    <string name="up"><![CDATA[<]]></string>
 </resources>
