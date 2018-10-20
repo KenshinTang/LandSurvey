@@ -29,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
+import com.kapplication.landsurvey.fragments.ListDrawerFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.model.Path
@@ -363,9 +364,9 @@ class MainActivity : AppCompatActivity(),
                 }
                 R.id.button_show_history -> {
                     Log.d(TAG, "history button clicked.")
-//                    val list = ListDrawerFragment.newInstance(1)
-//                    supportFragmentManager.beginTransaction().replace(R.id.drawer_fragment, list)
-//                            .addToBackStack(null).commit()
+                    val list = ListDrawerFragment.newInstance("", "")
+                    supportFragmentManager.beginTransaction().replace(R.id.drawer_fragment, list)
+                            .addToBackStack(null).commit()
                 }
             }
             is ImageView -> when (view.id) {
