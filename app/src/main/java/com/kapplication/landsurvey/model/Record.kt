@@ -4,20 +4,48 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.kapplication.landsurvey.utils.Utils
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 class Record {
-    private val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
-    var name: String = "11111111111"
-    var perimeter: Double = 2140.31234
+    var name: String = ""
+    var perimeter: Double = 0.0
         get() = field.format(2)
-    var area: Double = 241.52234
+    var area: Double = 0.0
         get() = field.format(2)
-    var startTime: Long = 645465784354
-    var endTime: Long = 54683285
+    var startTime: String = ""
+    var endTime: String = ""
     var points: LinkedList<LatLng> = LinkedList()
     var altitudeRange: LinkedList<Double> = LinkedList()
+    var altitudeRangeString: String = ""
+
+    companion object {
+        fun from(file: File): Record {
+            val record = Record()
+            val contents: List<String> = file.readLines()
+            for (content in contents) {
+                if (content.contains("Perimeter")) {
+                    record.perimeter = content.substringAfter(": ").toDouble()
+                }
+                if (content.contains("Area")) {
+                    record.area = content.substringAfter(": ").toDouble()
+                }
+                if (content.contains("Start Time")) {
+                    record.startTime = content.substringAfter(": ")
+                }
+                if (content.contains("End Time")) {
+                    record.endTime = content.substringAfter(": ")
+                }
+                if (content.contains("Altitude Range")) {
+                    record.altitudeRangeString = content.substringAfter(": ")
+                }
+                if (content.contains(", ")) {
+                    record.points.add(LatLng(content.substringBefore(",").toDouble(), content.substringAfter(", ").toDouble()))
+                }
+            }
+            record.name = file.name
+            return record
+        }
+    }
 
     private fun Double.format(fractionDigits: Int): Double {
         return String.format("%.${fractionDigits}f", this).toDouble()
@@ -26,8 +54,8 @@ class Record {
     override fun toString(): String {
         /*
         Name: 111111
-        Perimeter: 305.93m
-        Area: 8843.26㎡
+        Perimeter(m): 305.93m
+        Area(㎡): 8843.26
         Start Time: 2018-10-20 06:44:46
         End Time: 2018-10-20 06:44:54
         Coordinates(5){
@@ -39,11 +67,11 @@ class Record {
         }
         */
         val sb = StringBuilder()
-        sb.append("\nName: $name\n")
-                .append("Perimeter: ${perimeter}m\n")
-                .append("Area: ${area}㎡\n")
-                .append("Start Time: ${SimpleDateFormat(DATE_FORMAT).format(startTime)}\n")
-                .append("End Time: ${SimpleDateFormat(DATE_FORMAT).format(endTime)}\n")
+        sb.append("Name: $name\n")
+                .append("Perimeter(m): $perimeter\n")
+                .append("Area(㎡): $area\n")
+                .append("Start Time: $startTime\n")
+                .append("End Time: $endTime\n")
                 .append("Altitude Range: ${if (altitudeRange.isEmpty()) 0.0 else altitudeRange.first} ~ ${if (altitudeRange.isEmpty()) 0.0 else altitudeRange.last}\n")
                 .append("Coordinates(${points.size}){\n")
         for (point in points) {

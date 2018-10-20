@@ -21,7 +21,7 @@ class RecordAdapter(private val mRecordList: ArrayList<Record>) : RecyclerView.A
         holder.item.findViewById<TextView>(R.id.textView_name).text = mRecordList[position].name
         holder.item.findViewById<TextView>(R.id.textView_perimeter).text = "Length: ${mRecordList[position].perimeter}m"
         holder.item.findViewById<TextView>(R.id.textView_area).text = "Area: ${mRecordList[position].area}㎡"
-        holder.item.findViewById<TextView>(R.id.textView_time).text = mRecordList[position].endTime.toString()
+        holder.item.findViewById<TextView>(R.id.textView_time).text = "Save Time: ${mRecordList[position].endTime}"
     }
 
     override fun getItemCount(): Int {

@@ -10,10 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
 import com.kapplication.landsurvey.R
 import com.kapplication.landsurvey.adapter.RecordAdapter
 import com.kapplication.landsurvey.model.Record
+import com.kapplication.landsurvey.utils.Utils
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,9 +48,14 @@ class ListDrawerFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val data = ArrayList<Record>()
-        data.add(Record())
-        data.add(Record())
-        data.add(Record())
+        val recordDir = Utils.getLandSurveyDir()
+        if (recordDir?.exists()!!) {
+            for (file in recordDir.listFiles()) {
+                if (file.isFile) {
+                    data.add(Record.from(file))
+                }
+            }
+        }
         val viewManager = LinearLayoutManager(activity)
         val viewAdapter = RecordAdapter(data)
         val view = inflater.inflate(R.layout.fragment_list_drawer, container, false)

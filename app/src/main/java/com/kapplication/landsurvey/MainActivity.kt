@@ -33,6 +33,7 @@ import com.kapplication.landsurvey.model.Path
 import com.kapplication.landsurvey.model.Record
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
+import com.kapplication.landsurvey.utils.Utils
 import mehdi.sakout.fancybuttons.FancyButton
 
 
@@ -59,8 +60,8 @@ class MainActivity : AppCompatActivity(),
     private var mCurrentLatLng: LatLng = CD
     private var mCurrentLocation: Location? = null
     private var mCurrentMode: Mode = Mode.AUTOMATIC
-    private var mStartTime: Long = 0
-    private var mEndTime: Long = 0
+    private var mStartTime: String = ""
+    private var mEndTime: String = ""
     private var mPerimeter: Double = 0.0
     private var mArea: Double = 0.0
 
@@ -384,7 +385,7 @@ class MainActivity : AppCompatActivity(),
         mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
         mIsMeasuring = true
-        mStartTime = System.currentTimeMillis()
+        mStartTime = Utils.formatTime(System.currentTimeMillis())
     }
 
     private fun stopMeasuring() {
@@ -403,7 +404,7 @@ class MainActivity : AppCompatActivity(),
         }
         mPath.print()
         mIsMeasuring = false
-        mEndTime = System.currentTimeMillis()
+        mEndTime = Utils.formatTime(System.currentTimeMillis())
 
         showSaveDialog()
     }

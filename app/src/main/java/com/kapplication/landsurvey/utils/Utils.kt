@@ -1,6 +1,7 @@
 package com.kapplication.landsurvey.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import java.io.File
+import java.text.SimpleDateFormat
 
 class Utils {
     companion object {
@@ -53,6 +55,11 @@ class Utils {
             }
             Log.i("Utils", "Dir=${dir.absolutePath}")
             return dir
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun formatTime(time: Long, format: String = "yyyy-MM-dd HH:mm:ss"): String {
+            return SimpleDateFormat(format).format(time)
         }
     }
 
