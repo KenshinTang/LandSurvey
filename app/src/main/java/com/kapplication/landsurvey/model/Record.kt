@@ -7,6 +7,7 @@ import java.io.File
 import java.util.*
 
 class Record {
+    private val TAG: String = "Record"
     var name: String = ""
     var perimeter: Double = 0.0
         get() = field.format(2)
@@ -42,7 +43,7 @@ class Record {
                     record.points.add(LatLng(content.substringBefore(",").toDouble(), content.substringAfter(", ").toDouble()))
                 }
             }
-            record.name = file.name
+            record.name = file.nameWithoutExtension
             return record
         }
     }
@@ -82,7 +83,7 @@ class Record {
     }
 
     fun writeToFile() : Boolean {
-        Log.i("kenshin", this.toString())
+        Log.i(TAG, this.toString())
         try {
             val file = File(Utils.getLandSurveyDir(), "$name.txt")
             if (file.exists()) {
@@ -91,7 +92,7 @@ class Record {
             file.writeText(toString())
             return true
         } catch (e: Exception) {
-            Log.e("kenshin", "save file failed.", e)
+            Log.e(TAG, "save file failed.", e)
             return false
         }
     }

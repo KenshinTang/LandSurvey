@@ -8,4 +8,5 @@
     <color name="defaultButtonColor">#3FD8B4</color>
     <color name="stopButtonColor">#F76D52</color>
     <color name="textColor">#FF3B445A</color>
+    <color name="list_item_background">#33D8D8D8</color>
 </resources>
