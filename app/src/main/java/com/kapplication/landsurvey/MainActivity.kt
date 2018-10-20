@@ -19,10 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,6 +30,7 @@ import com.kapplication.landsurvey.fragments.ListDrawerFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.model.Path
+import com.kapplication.landsurvey.model.Record
 import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import mehdi.sakout.fancybuttons.FancyButton
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity(),
         SaveDialogFragment.SaveDialogListener {
 
     private val TAG: String = "MainActivity"
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+    private val PERMISSION_REQUEST_CODE = 1
     private val REQUEST_CHECK_SETTINGS = 2
     private val CD = LatLng(30.542434, 104.073449)
     private val COLOR_LINE = Color.rgb(56,148,255)
@@ -61,6 +59,10 @@ class MainActivity : AppCompatActivity(),
     private var mCurrentLatLng: LatLng = CD
     private var mCurrentLocation: Location? = null
     private var mCurrentMode: Mode = Mode.AUTOMATIC
+    private var mStartTime: Long = 0
+    private var mEndTime: Long = 0
+    private var mPerimeter: Double = 0.0
+    private var mArea: Double = 0.0
 
     private var mPilingButton: FancyButton? = null
     private var mStartStopButton: FancyButton? = null
@@ -134,11 +136,7 @@ class MainActivity : AppCompatActivity(),
 
         initView()
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true)
-        }
+        PermissionUtils.checkPermissionAndRequest(this, PERMISSION_REQUEST_CODE, true)
 
         mLocationReceiver = LocationReceiver()
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
@@ -286,8 +284,8 @@ class MainActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         Log.i(TAG, "onRequestPermissionsResult(request=$requestCode)")
         when (requestCode) {
-            LOCATION_PERMISSION_REQUEST_CODE -> {
-                if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            PERMISSION_REQUEST_CODE -> {
+                if (PermissionUtils.isPermissionGranted(permissions, grantResults)) {
                     // Enable the my location layer if the permission has been granted.
                     enableMyLocation()
                     mLocationService?.startLocationUpdate()
@@ -386,6 +384,7 @@ class MainActivity : AppCompatActivity(),
         mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
         mIsMeasuring = true
+        mStartTime = System.currentTimeMillis()
     }
 
     private fun stopMeasuring() {
@@ -404,6 +403,7 @@ class MainActivity : AppCompatActivity(),
         }
         mPath.print()
         mIsMeasuring = false
+        mEndTime = System.currentTimeMillis()
 
         showSaveDialog()
     }
@@ -427,8 +427,13 @@ class MainActivity : AppCompatActivity(),
         mPolyline?.remove()
         mPolygon?.remove()
         mPolyline = mGoogleMap.addPolyline(PolylineOptions().addAll(mPath.getList()).width(4f).color(COLOR_LINE))
-        mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
-        mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
+
+        mPerimeter = SphericalUtil.computeLength(mPath.getList())
+        mArea = SphericalUtil.computeArea(mPath.getList())
+
+        mPerimeterTextView?.text = "${String.format("%.2f",mPerimeter)}m"
+        mAreaTextView?.text = "${String.format("%.2f",mArea)}㎡"
+
         mPointsTextView?.text = mPath.getList().size.toString()
         if (!mPath.getList().isEmpty()) {
             mLatLngTextView?.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
@@ -446,13 +451,27 @@ class MainActivity : AppCompatActivity(),
 
     private fun showSaveDialog() {
         val dialog = SaveDialogFragment()
-        dialog.show(fragmentManager, "NoticeDialogFragment")
+        dialog.show(fragmentManager, "SaveDialogFragment")
     }
 
     override fun onSaveClick(dialog: DialogFragment, fileName: String) {
         Log.i(TAG, "onSaveClick($fileName)")
-        mGoogleMap.clear()
-        mPath.clear()
+        val record = Record().apply {
+            name = fileName
+            startTime = mStartTime
+            endTime = mEndTime
+            perimeter = mPerimeter
+            area = mArea
+            points = mPath.getList()
+        }
+
+        if (!record.writeToFile()) {
+            Toast.makeText(this, "The file name is invalidate.", Toast.LENGTH_SHORT).show()
+        } else {
+            dialog.dismiss()
+            mGoogleMap.clear()
+            mPath.clear()
+        }
     }
 
     override fun onCancelClick(dialog: DialogFragment) {

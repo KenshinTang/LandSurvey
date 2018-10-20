@@ -24,6 +24,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.kapplication.landsurvey.R
@@ -33,20 +34,26 @@ import com.kapplication.landsurvey.R
  */
 object PermissionUtils {
 
-    /**
-     * Requests the fine location permission. If a rationale with an additional explanation should
-     * be shown to the user, displays a dialog that triggers the request.
-     */
-    fun requestPermission(activity: AppCompatActivity, requestId: Int,
-                          permission: String, finishActivity: Boolean) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-            // Display a dialog with rationale.
-            PermissionUtils.RationaleDialog.newInstance(requestId, finishActivity)
-                    .show(activity.supportFragmentManager, "dialog")
-        } else {
-            // Location permission has not been granted yet, request it.
-            ActivityCompat.requestPermissions(activity, arrayOf(permission), requestId)
+    val PERMISSIONS: Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION)
 
+    fun checkPermissionAndRequest(activity: AppCompatActivity, requestId: Int, finishActivity: Boolean) {
+        val needRequestPermissions = ArrayList<String>()
+
+        for (p in PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(activity, p) != PackageManager.PERMISSION_GRANTED) {
+                needRequestPermissions.add(p)
+            }
+        }
+
+        if (needRequestPermissions.isNotEmpty()) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, PERMISSIONS[0])) {
+                // Display a dialog with rationale.
+                PermissionUtils.RationaleDialog.newInstance(requestId, finishActivity)
+                        .show(activity.supportFragmentManager, "dialog")
+            } else {
+                // Location permission has not been granted yet, request it.
+                ActivityCompat.requestPermissions(activity, needRequestPermissions.toTypedArray(), requestId)
+            }
         }
     }
 
@@ -56,14 +63,14 @@ object PermissionUtils {
      *
      * @see android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback
      */
-    fun isPermissionGranted(grantPermissions: Array<String>, grantResults: IntArray,
-                            permission: String): Boolean {
-        for (i in grantPermissions.indices) {
-            if (permission == grantPermissions[i]) {
-                return grantResults[i] == PackageManager.PERMISSION_GRANTED
+    fun isPermissionGranted(grantPermissions: Array<String>, grantResults: IntArray): Boolean {
+        var grantSize = 0
+        for (g in grantResults) {
+            if (g == PackageManager.PERMISSION_GRANTED) {
+                grantSize++
             }
         }
-        return false
+        return PERMISSIONS.size == grantSize
     }
 
     /**
@@ -132,9 +139,7 @@ object PermissionUtils {
                     .setMessage(R.string.permission_rationale_location)
                     .setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener { dialog, which ->
                         // After click on Ok, request the permission.
-                        ActivityCompat.requestPermissions(activity!!,
-                                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                requestCode)
+                        ActivityCompat.requestPermissions(activity!!, PERMISSIONS, requestCode)
                         // Do not finish the Activity while requesting permission.
                         mFinishActivity = false
                     })

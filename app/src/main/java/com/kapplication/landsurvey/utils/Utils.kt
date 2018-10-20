@@ -4,8 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
+import java.io.File
 
 class Utils {
     companion object {
@@ -30,6 +33,26 @@ class Utils {
                 return false
             }
             return true
+        }
+
+        /* Checks if external storage is available for read and write */
+        fun isExternalStorageWritable(): Boolean {
+            return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+        }
+
+        /* Checks if external storage is available to at least read */
+        fun isExternalStorageReadable(): Boolean {
+            return Environment.getExternalStorageState() in
+                    setOf(Environment.MEDIA_MOUNTED, Environment.MEDIA_MOUNTED_READ_ONLY)
+        }
+
+        fun getLandSurveyDir(): File? {
+            val dir = File(Environment.getExternalStorageDirectory(), "LandSurvey")
+            if (!dir.exists()) {
+                Log.i("Utils", "Dir creation=${dir.mkdir()}")
+            }
+            Log.i("Utils", "Dir=${dir.absolutePath}")
+            return dir
         }
     }
 

@@ -48,10 +48,9 @@ class SaveDialogFragment : DialogFragment() {
         mSaveButton?.setOnClickListener {
             val fileName = mFileNameEditText?.text
             if (fileName.isNullOrEmpty()) {
-                Toast.makeText(activity, "You must enter a file name.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "You should input the file name.", Toast.LENGTH_SHORT).show()
             } else {
                 mSaveDialogListener?.onSaveClick(this, fileName.toString())
-                dismiss()
             }
         }
         mCancelButton?.setOnClickListener {
