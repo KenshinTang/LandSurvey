@@ -32,8 +32,6 @@
     <string name="history_record">History Record</string>
     <string name="up"><![CDATA[<]]></string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="altitude_range">Altitude range</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
