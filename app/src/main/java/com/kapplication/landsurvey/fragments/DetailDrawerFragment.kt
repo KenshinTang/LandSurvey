@@ -10,11 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 import com.kapplication.landsurvey.R
+import com.kapplication.landsurvey.model.Record
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_RECORD = "record"
 
 /**
  * A simple [Fragment] subclass.
@@ -26,16 +24,13 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class DetailDrawerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var record: Record? = null
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            record = it.getParcelable(ARG_RECORD)
         }
     }
 
@@ -45,6 +40,14 @@ class DetailDrawerFragment : Fragment() {
         view.findViewById<TextView>(R.id.up).setOnClickListener {
             fragmentManager?.popBackStack()
         }
+        view.findViewById<TextView>(R.id.textView_title).text = record?.name
+        view.findViewById<TextView>(R.id.textView_altitude_content).text = record?.altitudeRange
+        view.findViewById<TextView>(R.id.textView_area_content).text = "${record?.area}㎡"
+        view.findViewById<TextView>(R.id.textView_perimeter_content).text = "${record?.perimeter}m"
+//        view.findViewById<TextView>(R.id.textView_latitude_content).text = mCurrentLatlng.latitude
+//        view.findViewById<TextView>(R.id.textView_longitude_content).text = mCurrentLatlng.longitude
+        view.findViewById<TextView>(R.id.textView_start_time_content).text = record?.startTime
+        view.findViewById<TextView>(R.id.textView_end_time_content).text = record?.endTime
         return view
     }
 
@@ -88,17 +91,13 @@ class DetailDrawerFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
          * @return A new instance of fragment DetailDrawerFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(r: Record) =
                 DetailDrawerFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putParcelable(ARG_RECORD, r)
                     }
                 }
     }

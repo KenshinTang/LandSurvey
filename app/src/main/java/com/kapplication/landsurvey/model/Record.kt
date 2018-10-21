@@ -1,13 +1,16 @@
 package com.kapplication.landsurvey.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.kapplication.landsurvey.utils.Utils
 import java.io.File
 import java.util.*
 
-class Record {
-    private val TAG: String = "Record"
+private const val TAG = "Record"
+
+class Record : Parcelable {
     var name: String = ""
     var perimeter: Double = 0.0
         get() = field.format(2)
@@ -16,10 +19,25 @@ class Record {
     var startTime: String = ""
     var endTime: String = ""
     var points: LinkedList<LatLng> = LinkedList()
-    var altitudeRange: LinkedList<Double> = LinkedList()
-    var altitudeRangeString: String = ""
+    var altitudeRange: String = ""
 
-    companion object {
+    companion object CREATOR : Parcelable.Creator<Record> {
+        override fun createFromParcel(parcel: Parcel): Record {
+            return Record().apply {
+                name = parcel.readString()
+                perimeter = parcel.readDouble()
+                area = parcel.readDouble()
+                startTime = parcel.readString()
+                endTime = parcel.readString()
+                parcel.readTypedList(points, LatLng.CREATOR)
+                altitudeRange = parcel.readString()
+            }
+        }
+
+        override fun newArray(size: Int): Array<Record?> {
+            return arrayOfNulls(size)
+        }
+
         fun from(file: File): Record {
             val record = Record()
             val contents: List<String> = file.readLines()
@@ -37,7 +55,7 @@ class Record {
                     record.endTime = content.substringAfter(": ")
                 }
                 if (content.contains("Altitude Range")) {
-                    record.altitudeRangeString = content.substringAfter(": ")
+                    record.altitudeRange = content.substringAfter(": ")
                 }
                 if (content.contains(", ")) {
                     record.points.add(LatLng(content.substringBefore(",").toDouble(), content.substringAfter(", ").toDouble()))
@@ -73,7 +91,7 @@ class Record {
                 .append("Area(㎡): $area\n")
                 .append("Start Time: $startTime\n")
                 .append("End Time: $endTime\n")
-                .append("Altitude Range: ${if (altitudeRange.isEmpty()) 0.0 else altitudeRange.first} ~ ${if (altitudeRange.isEmpty()) 0.0 else altitudeRange.last}\n")
+                .append("Altitude Range: $altitudeRange\n")
                 .append("Coordinates(${points.size}){\n")
         for (point in points) {
             sb.append("\t${point.latitude}, ${point.longitude}\n")
@@ -96,4 +114,22 @@ class Record {
             return false
         }
     }
+
+    override fun writeToParcel(out: Parcel, flag: Int) {
+        with(out) {
+            writeString(name)
+            writeDouble(perimeter)
+            writeDouble(area)
+            writeString(startTime)
+            writeString(endTime)
+            writeTypedList(points)
+            writeString(altitudeRange)
+        }
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+
 }
