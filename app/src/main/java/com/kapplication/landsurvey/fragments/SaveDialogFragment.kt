@@ -3,7 +3,6 @@ package com.kapplication.landsurvey.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -30,7 +29,7 @@ class SaveDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var view = initView()
+        val view = initView()
         val builder = AlertDialog.Builder(activity)
         with(builder) {
             setCancelable(false)
@@ -60,8 +59,7 @@ class SaveDialogFragment : DialogFragment() {
         return view
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        mSaveDialogListener = context as SaveDialogListener
+    fun setOnSaveDialogListener(listener: SaveDialogListener) {
+        mSaveDialogListener = listener
     }
 }

@@ -453,6 +453,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun showSaveDialog() {
         val dialog = SaveDialogFragment()
+        dialog.setOnSaveDialogListener(this)
         dialog.show(fragmentManager, "SaveDialogFragment")
     }
 

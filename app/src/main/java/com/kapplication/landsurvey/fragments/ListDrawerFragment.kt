@@ -50,6 +50,7 @@ class ListDrawerFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        //TODO 不应该在这里加数据, 比如已经停留在列表页, 但是数据增加了就不会刷新.
         val data = ArrayList<Record>()
         val recordDir = Utils.getLandSurveyDir()
         if (recordDir?.exists()!!) {

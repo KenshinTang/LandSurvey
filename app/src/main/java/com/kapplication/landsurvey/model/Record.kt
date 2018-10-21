@@ -20,6 +20,7 @@ class Record : Parcelable {
     var endTime: String = ""
     var points: LinkedList<LatLng> = LinkedList()
     var altitudeRange: String = ""
+    var filePath: String = ""
 
     companion object CREATOR : Parcelable.Creator<Record> {
         override fun createFromParcel(parcel: Parcel): Record {
@@ -31,6 +32,7 @@ class Record : Parcelable {
                 endTime = parcel.readString()
                 parcel.readTypedList(points, LatLng.CREATOR)
                 altitudeRange = parcel.readString()
+                filePath = parcel.readString()
             }
         }
 
@@ -62,6 +64,7 @@ class Record : Parcelable {
                 }
             }
             record.name = file.nameWithoutExtension
+            record.filePath = file.absolutePath
             return record
         }
     }
@@ -108,11 +111,16 @@ class Record : Parcelable {
                 return false
             }
             file.writeText(toString())
+            filePath = file.absolutePath
             return true
         } catch (e: Exception) {
             Log.e(TAG, "save file failed.", e)
             return false
         }
+    }
+
+    fun getRecordFile() : File? {
+        return if (filePath.isNotEmpty()) File(filePath) else null
     }
 
     override fun writeToParcel(out: Parcel, flag: Int) {
@@ -124,6 +132,7 @@ class Record : Parcelable {
             writeString(endTime)
             writeTypedList(points)
             writeString(altitudeRange)
+            writeString(filePath)
         }
     }
 
