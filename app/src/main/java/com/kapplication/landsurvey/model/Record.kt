@@ -130,6 +130,4 @@ class Record : Parcelable {
     override fun describeContents(): Int {
         return 0
     }
-
-
 }

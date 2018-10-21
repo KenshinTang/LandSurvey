@@ -23,6 +23,9 @@ private const val ARG_RECORD = "record"
  * create an instance of this fragment.
  *
  */
+
+private const val TAG = "DetailDrawerFragment"
+
 class DetailDrawerFragment : Fragment() {
     private var record: Record? = null
     private var listener: OnFragmentInteractionListener? = null

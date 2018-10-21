@@ -36,6 +36,10 @@ import com.kapplication.landsurvey.utils.PermissionUtils
 import com.kapplication.landsurvey.utils.Utils
 import mehdi.sakout.fancybuttons.FancyButton
 
+private const val TAG: String = "MainActivity"
+private const val PERMISSION_REQUEST_CODE = 1
+private const val REQUEST_CHECK_SETTINGS = 2
+
 
 class MainActivity : AppCompatActivity(),
         OnMapReadyCallback,
@@ -43,9 +47,6 @@ class MainActivity : AppCompatActivity(),
         GoogleMap.OnMarkerClickListener,
         SaveDialogFragment.SaveDialogListener {
 
-    private val TAG: String = "MainActivity"
-    private val PERMISSION_REQUEST_CODE = 1
-    private val REQUEST_CHECK_SETTINGS = 2
     private val CD = LatLng(30.542434, 104.073449)
     private val COLOR_LINE = Color.rgb(56,148,255)
     private val COLOR_AREA = Color.argb(100, 56,148,255)

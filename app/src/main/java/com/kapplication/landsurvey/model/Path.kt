@@ -5,6 +5,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 import java.util.*
 
+private const val TAG = "Path"
+
 class Path {
 
     private var mList = LinkedList<LatLng>()
@@ -58,7 +60,7 @@ class Path {
 
     fun print() {
         for (l in mList) {
-            Log.i("kenshin", "Path(${mList.size}):$l")
+            Log.i(TAG, "Path(${mList.size}):$l")
         }
     }
 }

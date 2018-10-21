@@ -21,8 +21,9 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.kapplication.landsurvey.MainActivity
 
+private const val TAG = "LocationService"
+
 class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private val TAG = "LocationService"
 
     companion object {
         val ACTION_LOCATION = "ACTION_LOCATION"

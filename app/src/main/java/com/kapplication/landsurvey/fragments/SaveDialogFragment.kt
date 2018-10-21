@@ -11,9 +11,9 @@ import android.widget.EditText
 import android.widget.Toast
 import com.kapplication.landsurvey.R
 
+private const val TAG = "SaveDialogFragment"
 
 class SaveDialogFragment : DialogFragment() {
-    private val TAG = "SaveDialogFragment"
 
     interface SaveDialogListener {
         fun onSaveClick(dialog: DialogFragment, fileName: String)

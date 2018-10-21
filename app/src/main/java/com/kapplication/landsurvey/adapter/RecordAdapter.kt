@@ -10,6 +10,8 @@ import com.kapplication.landsurvey.R
 import com.kapplication.landsurvey.fragments.DetailDrawerFragment
 import com.kapplication.landsurvey.model.Record
 
+private const val TAG = "RecordAdapter"
+
 class RecordAdapter(private val mRecordList: ArrayList<Record>) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
     class RecordViewHolder(val item: ConstraintLayout) : RecyclerView.ViewHolder(item)
 
