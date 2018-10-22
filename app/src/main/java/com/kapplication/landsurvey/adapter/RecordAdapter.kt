@@ -37,7 +37,7 @@ class RecordAdapter(private val mRecordList: ArrayList<Record>) : RecyclerView.A
         holder.itemView.setOnClickListener{
             mCurrentRecord = mRecordList[holder.adapterPosition]
             val detail = DetailDrawerFragment.newInstance(mRecordList[position])
-            (holder.itemView.context as AppCompatActivity).supportFragmentManager.beginTransaction().replace(R.id.drawer_fragment, detail)
+            (holder.itemView.context as AppCompatActivity).supportFragmentManager.beginTransaction().replace(R.id.drawer_fragment, detail, "DetailDrawerFragment")
                     .addToBackStack(null).commit()
         }
 

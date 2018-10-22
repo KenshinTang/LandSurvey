@@ -26,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.SphericalUtil
+import com.kapplication.landsurvey.fragments.DetailDrawerFragment
 import com.kapplication.landsurvey.fragments.ListDrawerFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment
 import com.kapplication.landsurvey.model.Mode
@@ -35,6 +36,7 @@ import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import com.kapplication.landsurvey.utils.Utils
 import mehdi.sakout.fancybuttons.FancyButton
+import java.util.*
 
 private const val TAG: String = "MainActivity"
 private const val PERMISSION_REQUEST_CODE = 1
@@ -45,7 +47,8 @@ class MainActivity : AppCompatActivity(),
         OnMapReadyCallback,
         Path.OnPathChangeListener,
         GoogleMap.OnMarkerClickListener,
-        SaveDialogFragment.SaveDialogListener {
+        SaveDialogFragment.SaveDialogListener,
+        DetailDrawerFragment.OnShowSurveyDetailListener {
 
     private val CD = LatLng(30.542434, 104.073449)
     private val COLOR_LINE = Color.rgb(56,148,255)
@@ -447,6 +450,9 @@ class MainActivity : AppCompatActivity(),
         if (mIsMeasuring) {
             marker?.remove()
             mPath.remove(marker?.position!!)
+        } else {
+            val detailFragment = supportFragmentManager.findFragmentByTag("DetailDrawerFragment") as DetailDrawerFragment
+            detailFragment.onMarkerClick(marker)
         }
         return true
     }
@@ -479,5 +485,22 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCancelClick(dialog: DialogFragment) {
         Log.i(TAG, "onCancelClick")
+    }
+
+    override fun onShowSurveyDetail(record: Record?) {
+        record?: return
+        mGoogleMap.clear()
+        val points: LinkedList<LatLng> = record.points
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(points.last, 18f))
+
+        for (point in points) {
+            mGoogleMap.addMarker(MarkerOptions().position(point).icon(mMarker))
+        }
+        mPolygon = mGoogleMap.addPolygon(PolygonOptions()
+                .addAll(points)
+                .fillColor(COLOR_AREA)
+                .strokeWidth(4f)
+                .strokeColor(COLOR_LINE)
+        )
     }
 }
