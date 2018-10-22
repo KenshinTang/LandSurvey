@@ -153,12 +153,10 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
     //register for location updates with onLocationChanged:
     fun onLocationChanged(location: Location?) {
         // New location has now been determined
-        val msg = "Updated Location: " +
-                java.lang.Double.toString(location!!.latitude) + "," +
-                java.lang.Double.toString(location.longitude) + "," +
-                location.accuracy + "," +
-                location.extras?.getInt("satellites") + "," +
-                location.extras?.toString()
+        val msg = "Updated Location: Latlng(${location!!.latitude}, ${location.longitude})," +
+                " accuracy(${location.accuracy}), altitude(${location.altitude})," +
+                " satellites(${location.extras?.getInt("satellites")})," +
+                " extras(${location.extras?.toString()})"
         Log.d(TAG, "onLocationChanged: $msg")
 
         val intent = Intent(ACTION_LOCATION).putExtra(KEY_UPDATED_LOCATION, location)

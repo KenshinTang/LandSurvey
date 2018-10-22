@@ -37,6 +37,7 @@ import com.kapplication.landsurvey.utils.PermissionUtils
 import com.kapplication.landsurvey.utils.Utils
 import mehdi.sakout.fancybuttons.FancyButton
 import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG: String = "MainActivity"
 private const val PERMISSION_REQUEST_CODE = 1
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity(),
     private var mEndTime: String = ""
     private var mPerimeter: Double = 0.0
     private var mArea: Double = 0.0
+    private var mAltitudes = ArrayList<Double>()
 
     private var mPilingButton: FancyButton? = null
     private var mStartStopButton: FancyButton? = null
@@ -96,7 +98,7 @@ class MainActivity : AppCompatActivity(),
 //                extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
 //                    mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_LAST_LOCATION)
 //                    if (mCurrentLocation != null) {
-//                        updateUI(mCurrentLocation, true)
+//                        updateGPSInfo(mCurrentLocation, true)
 //                        mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
 //                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
 //                    }
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity(),
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
                     mCurrentLocation= intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
-                    updateUI(mCurrentLocation)
+                    updateGPSInfo(mCurrentLocation)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
                         mPath.add(mCurrentLatLng, 2)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -351,7 +353,7 @@ class MainActivity : AppCompatActivity(),
             is FancyButton -> when (view.id) {
                 R.id.button_piling -> {
                     Log.d(TAG, "piling button clicked.")
-                    updateUI(mCurrentLocation)
+                    updateGPSInfo(mCurrentLocation)
                     if (mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
                         mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
@@ -385,6 +387,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun startMeasuring() {
+        mGoogleMap.clear()
+        mPath.clear()
+        mAltitudes.clear()
         mStartStopButton?.setIconResource(R.drawable.stop)
         mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
@@ -413,18 +418,44 @@ class MainActivity : AppCompatActivity(),
         showSaveDialog()
     }
 
-    private fun updateUI(location: Location?) {
+    private fun updateGPSInfo(location: Location?) {
         location ?: return
         var satelliteNums = location.extras?.getInt("satellites", 0)
         if (satelliteNums == null) {
             satelliteNums = 0
         }
+        updateAltitudeRange(location.altitude)
         mSatelliteTextView?.text = satelliteNums.toString()
         mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
         if (mIsGetLocationFirstTime) {
             mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
             mIsGetLocationFirstTime = false
+        }
+    }
+
+    private fun updateAltitudeRange(altitude: Double) {
+        if (!mIsMeasuring) {
+            return
+        }
+
+        when (mAltitudes.size) {
+            0 -> mAltitudes.add(altitude)
+            1 -> {
+                if (altitude <= mAltitudes[0]) {
+                    mAltitudes.add(mAltitudes[0])
+                    mAltitudes[0] = altitude
+                } else {
+                    mAltitudes.add(altitude)
+                }
+            }
+            2 -> {
+                if (altitude < mAltitudes[0]) {
+                    mAltitudes[0] = altitude
+                } else if (altitude > mAltitudes[1]) {
+                    mAltitudes[1] = altitude
+                }
+            }
         }
     }
 
@@ -471,6 +502,13 @@ class MainActivity : AppCompatActivity(),
             endTime = mEndTime
             perimeter = mPerimeter
             area = mArea
+            altitudeRange =
+                    when (mAltitudes.size) {
+                        0 -> "0.0 ~ 0.0"
+                        1 -> "${mAltitudes[0]} ~ ${mAltitudes[0]}"
+                        else -> "${mAltitudes[0]} ~ ${mAltitudes[1]}"
+                    }
+
             points = mPath.getList()
         }
 
