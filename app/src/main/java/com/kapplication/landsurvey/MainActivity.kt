@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.MarkerManager
 import com.google.maps.android.SphericalUtil
 import com.kapplication.landsurvey.fragments.DetailDrawerFragment
 import com.kapplication.landsurvey.fragments.ListDrawerFragment
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity(),
     private var mIsGetLocationFirstTime = true
 
     private val mPath: Path = Path()
+    private var mMarkerCollection: MarkerManager.Collection? = null
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -108,10 +110,9 @@ class MainActivity : AppCompatActivity(),
                     mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
                     updateGPSInfo(mCurrentLocation)
-                    if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
-                        mPath.add(mCurrentLatLng, 2)
+                    if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
                         val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                        mGoogleMap.addMarker(markerOption)
+                        mMarkerCollection?.addMarker(markerOption)
                     }
                 }
                 extras.containsKey(LocationService.KEY_SATELLITE_STATUS) -> {
@@ -225,6 +226,7 @@ class MainActivity : AppCompatActivity(),
         Log.i(TAG, "onMapReady")
         map ?: return
         mGoogleMap = map
+        mMarkerCollection = MarkerManager(mGoogleMap).newCollection()
 
         with(mGoogleMap) {
             setOnMarkerClickListener(this@MainActivity)
@@ -242,7 +244,7 @@ class MainActivity : AppCompatActivity(),
                 if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
                     mPath.add(it)
                     val markerOption = MarkerOptions().position(it).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                    mGoogleMap.addMarker(markerOption)
+                    mMarkerCollection?.addMarker(markerOption)
                 }
             }
         }
@@ -365,7 +367,7 @@ class MainActivity : AppCompatActivity(),
                     if (mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
                         val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                        mGoogleMap.addMarker(markerOption)
+                        mMarkerCollection?.addMarker(markerOption)
                     }
                 }
                 R.id.button_start_stop -> {
@@ -483,11 +485,20 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         if (mIsMeasuring) {
-            marker?.remove()
-            mPath.remove(marker?.position!!)
+            val position = marker?.position
+            val index = mPath.getList().indexOf(position)
+
+            mMarkerCollection?.remove(marker)
+            mPath.remove(position!!)
+
+            if (index == 0) {
+                mMarkerCollection?.markers?.first()?.setIcon(mFirstMarker)
+            }
         } else {
-            val detailFragment = supportFragmentManager.findFragmentByTag("DetailDrawerFragment") as DetailDrawerFragment
-            detailFragment.onMarkerClick(marker)
+            val detailFragment = supportFragmentManager.findFragmentByTag("DetailDrawerFragment")
+            if (detailFragment != null) {
+                (detailFragment as DetailDrawerFragment).onMarkerClick(marker)
+            }
         }
         return true
     }
@@ -536,8 +547,8 @@ class MainActivity : AppCompatActivity(),
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(points.last, 18f))
 
         for ((index, point) in points.withIndex()) {
-            val markerOptions = MarkerOptions().position(point).icon(if (index == 0) mFirstMarker else mMarker)
-            mGoogleMap.addMarker(markerOptions)
+            val markerOption = MarkerOptions().position(point).icon(if (index == 0) mFirstMarker else mMarker)
+            mMarkerCollection?.addMarker(markerOption)
         }
         mPolygon = mGoogleMap.addPolygon(PolygonOptions()
                 .addAll(points)

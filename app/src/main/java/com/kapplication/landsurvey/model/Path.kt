@@ -21,18 +21,20 @@ class Path {
         mListener = listener
     }
 
-    fun add(point: LatLng) {
-        mList.add(point)
-        mListener?.onPathChanged()
+    fun add(point: LatLng) : Boolean {
+        return mList.add(point).also {
+            if (it) {
+                mListener?.onPathChanged()
+            }
+        }
     }
 
     // add point to list only if the distance is larger tan $limit meter
-    fun add(point: LatLng, limit: Int) {
-        if (mList.isEmpty()) {
-            add(point)
-        } else if (SphericalUtil.computeDistanceBetween(point, mList.last) > limit) {
-            add(point)
+    fun add(point: LatLng, limit: Int) : Boolean {
+        if (mList.isEmpty() || (SphericalUtil.computeDistanceBetween(point, mList.last) > limit)) {
+            return add(point)
         }
+        return false
     }
 
     fun remove() {
