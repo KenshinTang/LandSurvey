@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mContext: Context
 
     private var mMarker: BitmapDescriptor? = null
+    private var mFirstMarker: BitmapDescriptor? = null
     private var mLocationService: LocationService? = null
     private lateinit var mLocationReceiver: LocationReceiver
 
@@ -109,7 +110,8 @@ class MainActivity : AppCompatActivity(),
                     updateGPSInfo(mCurrentLocation)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
                         mPath.add(mCurrentLatLng, 2)
-                        mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
+                        val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
+                        mGoogleMap.addMarker(markerOption)
                     }
                 }
             }
@@ -173,6 +175,7 @@ class MainActivity : AppCompatActivity(),
         mLatLngTextView = findViewById(R.id.textView_latlng)
 
         mMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker)
+        mFirstMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_first)
 
         val drawerLayout: LinearLayout = findViewById(R.id.layout_drawer)
         val modeLayout: LinearLayout = findViewById(R.id.layout_mode)
@@ -234,7 +237,8 @@ class MainActivity : AppCompatActivity(),
             setOnMapLongClickListener {
                 if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
                     mPath.add(it)
-                    mGoogleMap.addMarker(MarkerOptions().position(it).icon(mMarker))
+                    val markerOption = MarkerOptions().position(it).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
+                    mGoogleMap.addMarker(markerOption)
                 }
             }
         }
@@ -356,7 +360,8 @@ class MainActivity : AppCompatActivity(),
                     updateGPSInfo(mCurrentLocation)
                     if (mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
-                        mGoogleMap.addMarker(MarkerOptions().position(mCurrentLatLng).icon(mMarker))
+                        val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
+                        mGoogleMap.addMarker(markerOption)
                     }
                 }
                 R.id.button_start_stop -> {
@@ -531,8 +536,9 @@ class MainActivity : AppCompatActivity(),
         val points: LinkedList<LatLng> = record.points
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(points.last, 18f))
 
-        for (point in points) {
-            mGoogleMap.addMarker(MarkerOptions().position(point).icon(mMarker))
+        for ((index, point) in points.withIndex()) {
+            val markerOptions = MarkerOptions().position(point).icon(if (index == 0) mFirstMarker else mMarker)
+            mGoogleMap.addMarker(markerOptions)
         }
         mPolygon = mGoogleMap.addPolygon(PolygonOptions()
                 .addAll(points)
