@@ -27,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.MarkerManager
 import com.google.maps.android.SphericalUtil
+import com.kapplication.landsurvey.fragments.DeleteDialogFragment
 import com.kapplication.landsurvey.fragments.DetailDrawerFragment
 import com.kapplication.landsurvey.fragments.ListDrawerFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity(),
         Path.OnPathChangeListener,
         GoogleMap.OnMarkerClickListener,
         SaveDialogFragment.SaveDialogListener,
-        DetailDrawerFragment.OnShowSurveyDetailListener {
+        DetailDrawerFragment.OnShowSurveyDetailListener,
+        DeleteDialogFragment.OnDeleteDialogListener {
 
     private val CD = LatLng(30.542434, 104.073449)
     private val COLOR_LINE = Color.rgb(56,148,255)
@@ -489,15 +491,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         if (mIsMeasuring) {
-            val position = marker?.position
-            val index = mPath.getList().indexOf(position)
-
-            mMarkerCollection?.remove(marker)
-            mPath.remove(position!!)
-
-            if (index == 0) {
-                mMarkerCollection?.markers?.first()?.setIcon(mFirstMarker)
-            }
+            showDeleteDialog(marker)
         } else {
             val detailFragment = supportFragmentManager.findFragmentByTag("DetailDrawerFragment")
             if (detailFragment != null) {
@@ -511,6 +505,27 @@ class MainActivity : AppCompatActivity(),
         val dialog = SaveDialogFragment()
         dialog.setOnSaveDialogListener(this)
         dialog.show(fragmentManager, "SaveDialogFragment")
+    }
+
+    private fun showDeleteDialog(marker: Marker?) {
+        val dialog = DeleteDialogFragment()
+        dialog.setOnDeleteDialogListener(this@MainActivity)
+        dialog.setMarker(marker)
+        dialog.show(fragmentManager, "DeleteDialogFragment")
+    }
+
+    override fun onDeleteClick(dialog: DialogFragment, marker: Marker?) {
+        val position = marker?.position
+        val index = mPath.getList().indexOf(position)
+
+        mMarkerCollection?.remove(marker)
+        mPath.remove(position!!)
+
+        if (index == 0) {
+            mMarkerCollection?.markers?.first()?.setIcon(mFirstMarker)
+        }
+
+        dialog.dismiss()
     }
 
     override fun onSaveClick(dialog: DialogFragment, fileName: String) {
