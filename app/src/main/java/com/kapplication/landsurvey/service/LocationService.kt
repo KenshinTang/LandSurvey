@@ -3,10 +3,13 @@ package com.kapplication.landsurvey.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.GnssStatus
 import android.location.Location
+import android.location.LocationManager
 import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
@@ -26,21 +29,31 @@ private const val TAG = "LocationService"
 class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     companion object {
-        val ACTION_LOCATION = "ACTION_LOCATION"
-        val KEY_LAST_LOCATION = "KEY_LAST_LOCATION"
-        val KEY_UPDATED_LOCATION = "KEY_UPDATED_LOCATION"
+        const val ACTION_LOCATION = "ACTION_LOCATION"
+        const val KEY_LAST_LOCATION = "KEY_LAST_LOCATION"
+        const val KEY_UPDATED_LOCATION = "KEY_UPDATED_LOCATION"
+        const val KEY_SATELLITE_STATUS = "KEY_SATELLITE_STATUS"
     }
 
     private var mIsLocationUpdating = false
     private var mGoogleApiClient: GoogleApiClient? = null
     private var mLocationRequest: LocationRequest? = null
     private var mFusedLocationClient: FusedLocationProviderClient? = null
+    private var mLocationManager: LocationManager? = null
 
     private var mBinder: IBinder = LocationBinder()
 
     inner class LocationBinder : Binder() {
         fun getService() : LocationService {
             return this@LocationService
+        }
+    }
+
+    private val mGnssCallback = object : GnssStatus.Callback() {
+        override fun onSatelliteStatusChanged(status: GnssStatus?) {
+            super.onSatelliteStatusChanged(status)
+            val intent = Intent(ACTION_LOCATION).putExtra(KEY_SATELLITE_STATUS, status?.satelliteCount ?: 0)
+            LocalBroadcastManager.getInstance(this@LocationService).sendBroadcast(intent)
         }
     }
 
@@ -60,6 +73,8 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
+        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
         mGoogleApiClient?.connect()
     }
 
@@ -76,6 +91,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
     }
 
     override fun onDestroy() {
+        mLocationManager?.unregisterGnssStatusCallback(mGnssCallback)
         stopLocationUpdates()
         mGoogleApiClient?.disconnect()
     }
@@ -98,6 +114,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
 //            Log.w(TAG, "get last location failed.)")
 //        }
 
+        mLocationManager?.registerGnssStatusCallback(mGnssCallback)
         startLocationUpdate()
     }
 
@@ -163,7 +180,7 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
-    fun stopLocationUpdates() {
+    private fun stopLocationUpdates() {
         if (mIsLocationUpdating) {
             Log.d(TAG, "stopLocationUpdates")
             mFusedLocationClient?.removeLocationUpdates(mLocationCallback)

@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(),
 //                    }
 //                }
                 extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
-                    mCurrentLocation= intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
+                    mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
                     mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
                     updateGPSInfo(mCurrentLocation)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring) {
@@ -113,6 +113,10 @@ class MainActivity : AppCompatActivity(),
                         val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
                         mGoogleMap.addMarker(markerOption)
                     }
+                }
+                extras.containsKey(LocationService.KEY_SATELLITE_STATUS) -> {
+                    val satelliteCount = intent.getIntExtra(LocationService.KEY_SATELLITE_STATUS, 0)
+                    mSatelliteTextView?.text = satelliteCount.toString()
                 }
             }
         }
@@ -425,12 +429,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun updateGPSInfo(location: Location?) {
         location ?: return
-        var satelliteNums = location.extras?.getInt("satellites", 0)
-        if (satelliteNums == null) {
-            satelliteNums = 0
-        }
         updateAltitudeRange(location.altitude)
-        mSatelliteTextView?.text = satelliteNums.toString()
         mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
         if (mIsGetLocationFirstTime) {
             mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
