@@ -38,4 +38,8 @@
     <string name="start_time">Start time</string>
     <string name="end_time">End time</string>
     <string name="delete_point">Delete Point</string>
+    <string name="area_unit">Area unit</string>
+    <string name="unit_acre">Acre(Default)</string>
+    <string name="unit_sqmi">Square mile</string>
+    <string name="unit_sqft">Square foot</string>
 </resources>

@@ -27,10 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.MarkerManager
 import com.google.maps.android.SphericalUtil
-import com.kapplication.landsurvey.fragments.DeleteDialogFragment
-import com.kapplication.landsurvey.fragments.DetailDrawerFragment
-import com.kapplication.landsurvey.fragments.ListDrawerFragment
-import com.kapplication.landsurvey.fragments.SaveDialogFragment
+import com.kapplication.landsurvey.fragments.*
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.model.Path
 import com.kapplication.landsurvey.model.Record
@@ -276,7 +273,8 @@ class MainActivity : AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_settings -> {
-            // User chose the "Settings" item, show the app settings UI...
+            val dialog = SettingDialogFragment()
+            dialog.show(fragmentManager, "SettingDialogFragment")
             true
         }
         else -> {
@@ -342,8 +340,6 @@ class MainActivity : AppCompatActivity(),
     fun onButtonClick(view: View) {
         when (view) {
             is RadioButton -> {
-                val checked = view.isChecked
-
                 when (view.id) {
                     R.id.radio_auto -> {
                         Log.d(TAG, "Change to auto mode.")
