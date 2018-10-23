@@ -426,7 +426,11 @@ class MainActivity : AppCompatActivity(),
         mIsMeasuring = false
         mEndTime = Utils.formatTime(System.currentTimeMillis())
 
-        showSaveDialog()
+        if (mPath.size() > 1) {
+            showSaveDialog()
+        } else {
+            Toast.makeText(this, "Not enough points to compute perimeter or area.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun updateGPSInfo(location: Location?) {
@@ -531,8 +535,6 @@ class MainActivity : AppCompatActivity(),
             Toast.makeText(this, "The file name is invalidate.", Toast.LENGTH_SHORT).show()
         } else {
             dialog.dismiss()
-            mGoogleMap.clear()
-            mPath.clear()
         }
     }
 
