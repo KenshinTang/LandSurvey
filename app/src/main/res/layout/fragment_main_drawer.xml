@@ -261,7 +261,7 @@
             android:layout_height="32dp"
             android:layout_marginTop="87dp"
             android:fontFamily="@font/dinbold"
-            android:text="0㎡"
+            android:text="0ac"
             android:textColor="@color/textColor"
 
             android:textSize="24sp"

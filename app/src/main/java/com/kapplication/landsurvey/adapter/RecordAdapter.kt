@@ -2,6 +2,7 @@ package com.kapplication.landsurvey.adapter
 
 import android.app.Activity
 import android.app.DialogFragment
+import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,7 @@ import com.kapplication.landsurvey.fragments.DetailDrawerFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment
 import com.kapplication.landsurvey.fragments.SaveDialogFragment.SaveDialogListener
 import com.kapplication.landsurvey.model.Record
+import com.kapplication.landsurvey.utils.Utils
 
 private const val TAG = "RecordAdapter"
 
@@ -21,16 +23,18 @@ class RecordAdapter(private val mRecordList: ArrayList<Record>) : RecyclerView.A
     class RecordViewHolder(val item: ConstraintLayout) : RecyclerView.ViewHolder(item)
 
     private var mCurrentRecord: Record? = null
+    private var mContext: Context? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_record, parent, false) as ConstraintLayout
+        mContext = parent.context
         return RecordViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         holder.item.findViewById<TextView>(R.id.textView_name).text = mRecordList[position].name
-        holder.item.findViewById<TextView>(R.id.textView_perimeter).text = "Length: ${mRecordList[position].perimeter}m"
-        holder.item.findViewById<TextView>(R.id.textView_area).text = "Area: ${mRecordList[position].area}㎡"
+        holder.item.findViewById<TextView>(R.id.textView_perimeter).text = "Perimeter: ${mRecordList[position].perimeter}m"
+        holder.item.findViewById<TextView>(R.id.textView_area).text = "Area: ${Utils.convertArea(mContext!!, mRecordList[position].area, 2)}"
         holder.item.findViewById<TextView>(R.id.textView_time).text = "Save Time: ${mRecordList[position].endTime}"
         holder.item.setBackgroundResource(if (position.rem(2) == 1) R.color.list_item_background else android.R.color.white)
 

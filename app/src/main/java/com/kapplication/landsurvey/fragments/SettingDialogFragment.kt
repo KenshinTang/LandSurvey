@@ -35,12 +35,21 @@ class SettingDialogFragment : DialogFragment() {
             dismiss()
         }
 
+        val sharedPre = context.getSharedPreferences("setting", Context.MODE_PRIVATE)
+        val unit = sharedPre.getInt("UNIT", Units.ACRE.ordinal)
+        when (unit) {
+            Units.ACRE.ordinal -> view.findViewById<RadioButton>(R.id.radio_acre).isChecked = true
+            Units.SQUARE_MILE.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqmi).isChecked = true
+            Units.SQUARE_FOOT.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqft).isChecked = true
+        }
+
         view.findViewById<Button>(R.id.button_save).setOnClickListener {
             val sharedPref = this@SettingDialogFragment.activity.getSharedPreferences("setting", Context.MODE_PRIVATE)
             with (sharedPref.edit()) {
                 putInt("UNIT", mCurrentUnit.ordinal)
                 apply()
             }
+            dismiss()
         }
 
         view.findViewById<RadioButton>(R.id.radio_acre).setOnClickListener {

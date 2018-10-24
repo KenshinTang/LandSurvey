@@ -13,9 +13,9 @@ private const val TAG = "Record"
 class Record : Parcelable {
     var name: String = ""
     var perimeter: Double = 0.0
-        get() = field.format(2)
+//        get() = field.format(2)
     var area: Double = 0.0
-        get() = field.format(2)
+//        get() = field.format(2)
     var startTime: String = ""
     var endTime: String = ""
     var points: LinkedList<LatLng> = LinkedList()

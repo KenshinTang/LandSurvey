@@ -9,6 +9,7 @@ import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.kapplication.landsurvey.model.Units
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -60,6 +61,25 @@ class Utils {
         @SuppressLint("SimpleDateFormat")
         fun formatTime(time: Long, format: String = "yyyy-MM-dd HH:mm:ss"): String {
             return SimpleDateFormat(format).format(time)
+        }
+
+        fun convertArea(context: Context, num: Double, fractionDigits: Int) : String {
+            val sharedPre = context.getSharedPreferences("setting", Context.MODE_PRIVATE)
+            val unit = sharedPre.getInt("UNIT", Units.ACRE.ordinal)
+            return when(unit) {
+                Units.ACRE.ordinal -> {
+                    String.format("%.${fractionDigits}f ac", num*0.0002471055)
+                }
+                Units.SQUARE_MILE.ordinal -> {
+                    String.format("%.${fractionDigits}f mi²", num*0.0000003861022)
+                }
+                Units.SQUARE_FOOT.ordinal -> {
+                    String.format("%.${fractionDigits}f ft²", num*10.76391)
+                }
+                else -> {
+                    String.format("%.${fractionDigits}f ac", num*0.0002471055)
+                }
+            }
         }
     }
 

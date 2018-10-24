@@ -410,7 +410,8 @@ class MainActivity : AppCompatActivity(),
         mStartStopButton?.setIconResource(R.drawable.start)
         mStartStopButton?.setText(resources.getString(R.string.start_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
-        mAreaTextView?.text = String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
+        //String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
+        mAreaTextView?.text = Utils.convertArea(this, SphericalUtil.computeArea(mPath.getList()), 2)
         mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
         if (!mPath.getList().isEmpty()) {
             mPolygon = mGoogleMap.addPolygon(PolygonOptions()
@@ -476,7 +477,7 @@ class MainActivity : AppCompatActivity(),
         mArea = SphericalUtil.computeArea(mPath.getList())
 
         mPerimeterTextView?.text = "${String.format("%.2f",mPerimeter)}m"
-        mAreaTextView?.text = "${String.format("%.2f",mArea)}㎡"
+        mAreaTextView?.text = Utils.convertArea(this, mArea, 2)
 
         mPointsTextView?.text = mPath.getList().size.toString()
         if (!mPath.getList().isEmpty()) {

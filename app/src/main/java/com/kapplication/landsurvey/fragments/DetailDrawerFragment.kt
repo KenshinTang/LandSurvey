@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.Marker
 
 import com.kapplication.landsurvey.R
 import com.kapplication.landsurvey.model.Record
+import com.kapplication.landsurvey.utils.Utils
 
 private const val ARG_RECORD = "record"
 
@@ -50,7 +51,7 @@ class DetailDrawerFragment : Fragment() {
         mLongitudeTextView = view.findViewById(R.id.textView_longitude_content)
         view.findViewById<TextView>(R.id.textView_title).text = record?.name
         view.findViewById<TextView>(R.id.textView_altitude_content).text = record?.altitudeRange
-        view.findViewById<TextView>(R.id.textView_area_content).text = "${record?.area}㎡"
+        view.findViewById<TextView>(R.id.textView_area_content).text = Utils.convertArea(this.context!!, record?.area!!, 2)
         view.findViewById<TextView>(R.id.textView_perimeter_content).text = "${record?.perimeter}m"
         mLatitudeTextView?.text = record?.points?.last?.latitude.toString()
         mLongitudeTextView?.text = record?.points?.last?.longitude.toString()
