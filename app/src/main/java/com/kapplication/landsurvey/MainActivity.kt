@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
@@ -399,6 +400,7 @@ class MainActivity : AppCompatActivity(),
         mGoogleMap.clear()
         mPath.clear()
         mAltitudes.clear()
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         mStartStopButton?.setIconResource(R.drawable.stop)
         mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
         mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
