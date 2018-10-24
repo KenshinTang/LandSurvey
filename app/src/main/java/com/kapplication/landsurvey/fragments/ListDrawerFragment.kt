@@ -61,7 +61,7 @@ class ListDrawerFragment : Fragment() {
             }
         }
         val viewManager = LinearLayoutManager(activity)
-        val viewAdapter = RecordAdapter(data)
+        val viewAdapter = RecordAdapter(data.sorted())
         val view = inflater.inflate(R.layout.fragment_list_drawer, container, false)
         mRecyclerList = view.findViewById<RecyclerView>(R.id.recycler_list).apply{
             setHasFixedSize(true)

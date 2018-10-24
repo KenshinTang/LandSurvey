@@ -63,6 +63,11 @@ class Utils {
             return SimpleDateFormat(format).format(time)
         }
 
+        @SuppressLint("SimpleDateFormat")
+        fun deFormatTime(time: String, format: String = "yyyy-MM-dd HH:mm:ss"): Long {
+            return SimpleDateFormat(format).parse(time).time
+        }
+
         fun convertArea(context: Context, num: Double, fractionDigits: Int) : String {
             val sharedPre = context.getSharedPreferences("setting", Context.MODE_PRIVATE)
             val unit = sharedPre.getInt("UNIT", Units.ACRE.ordinal)

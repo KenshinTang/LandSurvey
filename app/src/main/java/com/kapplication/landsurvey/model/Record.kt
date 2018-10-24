@@ -10,7 +10,7 @@ import java.util.*
 
 private const val TAG = "Record"
 
-class Record : Parcelable {
+class Record : Parcelable, Comparable<Record> {
     var name: String = ""
     var perimeter: Double = 0.0
 //        get() = field.format(2)
@@ -67,10 +67,6 @@ class Record : Parcelable {
             record.filePath = file.absolutePath
             return record
         }
-    }
-
-    private fun Double.format(fractionDigits: Int): Double {
-        return String.format("%.${fractionDigits}f", this).toDouble()
     }
 
     override fun toString(): String {
@@ -138,5 +134,13 @@ class Record : Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    override fun compareTo(other: Record): Int {
+        return if (Utils.deFormatTime(endTime) - Utils.deFormatTime(other.endTime) > 0) {
+            -1
+        } else {
+            1
+        }
     }
 }

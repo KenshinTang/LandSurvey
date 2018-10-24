@@ -12,8 +12,7 @@
 
 todo list
 record删除
-设置,单位换算
-列表更新, 排序
+列表更新
 无地图模式
 
 findviewbyid

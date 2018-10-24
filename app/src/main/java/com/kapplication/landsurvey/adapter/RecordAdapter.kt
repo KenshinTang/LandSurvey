@@ -19,7 +19,7 @@ import com.kapplication.landsurvey.utils.Utils
 
 private const val TAG = "RecordAdapter"
 
-class RecordAdapter(private val mRecordList: ArrayList<Record>) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>(), SaveDialogListener {
+class RecordAdapter(private val mRecordList: List<Record>) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>(), SaveDialogListener {
     class RecordViewHolder(val item: ConstraintLayout) : RecyclerView.ViewHolder(item)
 
     private var mCurrentRecord: Record? = null
