@@ -76,7 +76,6 @@ class RecordAdapter(private val mRecordList: List<Record>) : RecyclerView.Adapte
     }
 
     override fun onCancelClick(dialog: DialogFragment) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

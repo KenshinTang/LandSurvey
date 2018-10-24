@@ -12,8 +12,9 @@
 
 todo list
 record删除
-列表更新
 无地图模式
 
 findviewbyid
 升级
+bugly
+umeng
