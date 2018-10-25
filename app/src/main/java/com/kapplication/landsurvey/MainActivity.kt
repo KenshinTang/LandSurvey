@@ -7,7 +7,9 @@ import android.app.DialogFragment
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.GnssStatus
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.app.FragmentManager
@@ -93,6 +95,8 @@ class MainActivity : AppCompatActivity(),
     private val mPath: Path = Path()
     private var mMarkerCollection: MarkerManager.Collection? = null
 
+    private lateinit var mLocationManager: LocationManager
+
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "LocationReceiver($intent)")
@@ -138,6 +142,38 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private val mGnssCallback = object : GnssStatus.Callback() {
+        override fun onSatelliteStatusChanged(status: GnssStatus?) {
+            super.onSatelliteStatusChanged(status)
+            mSatelliteTextView?.text = status?.satelliteCount.toString()
+        }
+    }
+
+    private val mLocationListener = object: android.location.LocationListener {
+        override fun onLocationChanged(location: Location?) {
+            mCurrentLocation = location
+            Log.i(TAG, "LocationManager onLocationChanged(${location?.latitude}, ${location?.longitude})")
+            mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
+            updateGPSInfo(mCurrentLocation)
+            if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
+                if (mPath.size() == 1) {
+                    val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
+                    mMarkerCollection?.addMarker(markerOption)
+                }
+            }
+        }
+
+        override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+            Log.i(TAG, "onStatusChanged($p0, $p1, $p2")
+        }
+        override fun onProviderEnabled(p0: String?) {
+            Log.i(TAG, "onProviderEnabled($p0")
+        }
+        override fun onProviderDisabled(p0: String?) {
+            Log.i(TAG, "onProviderDisabled($p0")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
@@ -155,8 +191,17 @@ class MainActivity : AppCompatActivity(),
         mLocationReceiver = LocationReceiver()
         LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
 
-        bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+//        bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+
+        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, mLocationListener)
+        mLocationManager.registerGnssStatusCallback(mGnssCallback)
     }
+
+
 
     private fun hideVirtualKey() {
         val decorView: View = window.decorView
@@ -262,6 +307,8 @@ class MainActivity : AppCompatActivity(),
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocationReceiver)
 
+        mLocationManager.removeUpdates(mLocationListener)
+        mLocationManager.unregisterGnssStatusCallback(mGnssCallback)
         if (mBoundOnLocationService) {
             unbindService(mConnection)
             mBoundOnLocationService = false
@@ -307,6 +354,9 @@ class MainActivity : AppCompatActivity(),
                     // Enable the my location layer if the permission has been granted.
                     enableMyLocation()
                     mLocationService?.startLocationUpdate()
+
+                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0f, mLocationListener)
+                    mLocationManager.registerGnssStatusCallback(mGnssCallback)
                 } else {
                     // Display the missing permission error dialog when the fragments resume.
                     mPermissionDenied = true
