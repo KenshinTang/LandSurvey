@@ -43,4 +43,6 @@
     <string name="unit_acre">Acre(Default)</string>
     <string name="unit_sqmi">Square mile</string>
     <string name="unit_sqft">Square foot</string>
+    <string name="gps_is_required">For best results, please turn on device location which uses Google\'s location service.</string>
+    <string name="open_gps">Turn on location setting</string>
 </resources>

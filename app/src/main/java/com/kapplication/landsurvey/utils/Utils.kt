@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -12,6 +13,7 @@ import android.util.Log
 import com.kapplication.landsurvey.model.Units
 import java.io.File
 import java.text.SimpleDateFormat
+private const val TAG = "Utils"
 
 class Utils {
     companion object {
@@ -85,6 +87,13 @@ class Utils {
                     String.format("%.${fractionDigits}f ac", num*0.0002471055)
                 }
             }
+        }
+
+        fun isNetWorkAvailable(context: Context) : Boolean {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val isNetworkConnected = connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo.isConnected
+            Log.i(TAG, "isNetworkConnected = $isNetworkConnected")
+            return isNetworkConnected
         }
     }
 

@@ -2,17 +2,21 @@ package com.kapplication.landsurvey
 
 import android.Manifest
 import android.animation.Animator
-import android.app.Activity
+import android.app.AlertDialog
 import android.app.DialogFragment
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.GnssStatus
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -87,7 +91,7 @@ class MainActivity : AppCompatActivity(),
     private var mIsGetLocationFirstTime = true
     private val mPath: Path = Path()
 
-    private lateinit var mLocationManager: LocationManager
+    private var mLocationManager: LocationManager? = null
 
     private val mLocationListener = object: LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -119,12 +123,15 @@ class MainActivity : AppCompatActivity(),
             Log.i(TAG, "onStatusChanged($p0: String?, $p1: Int, $p2: Bundle?)")
         }
 
-        override fun onProviderEnabled(p0: String?) {
-            Log.i(TAG, "onProviderEnabled($p0: String?)")
+        override fun onProviderEnabled(type: String?) {
+            Log.i(TAG, "onProviderEnabled($type)")
         }
 
-        override fun onProviderDisabled(p0: String?) {
-            Log.i(TAG, "onProviderEnabled($p0: String?)")
+        override fun onProviderDisabled(type: String?) {
+            Log.i(TAG, "onProviderDisabled($type)")
+            if (LocationManager.GPS_PROVIDER == type) {
+                checkLocationSetting()
+            }
         }
     }
 
@@ -132,6 +139,16 @@ class MainActivity : AppCompatActivity(),
         override fun onSatelliteStatusChanged(status: GnssStatus?) {
             super.onSatelliteStatusChanged(status)
             textView_satellite_content.text = status?.satelliteCount.toString()
+        }
+    }
+
+    private val mNetworkChangeReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == ConnectivityManager.CONNECTIVITY_ACTION) {
+                if (Utils.isNetWorkAvailable(this@MainActivity)) {
+                    mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+                }
+            }
         }
     }
 
@@ -149,15 +166,36 @@ class MainActivity : AppCompatActivity(),
             return
         }
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        mLocationManager.registerGnssStatusCallback(mGnssStatusCallback)
-        requestLocationUpdates()
+        checkLocationSetting()
+        registerReceiver(mNetworkChangeReceiver, IntentFilter().apply {
+            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        })
     }
 
     private fun requestLocationUpdates() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, mLocationListener)
+        Log.i(TAG, "requestLocationUpdates")
+        mLocationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2.0f, mLocationListener)
+        mLocationManager?.registerGnssStatusCallback(mGnssStatusCallback)
+    }
+
+    private fun checkLocationSetting() {
+        if (mLocationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER)!!) {
+            requestLocationUpdates()
+        } else {
+            val builder = AlertDialog.Builder(this)
+                    .setTitle(R.string.open_gps)
+                    .setMessage(R.string.gps_is_required)
+                    .setPositiveButton(android.R.string.ok) { dialog, id ->
+                        startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CHECK_SETTINGS)
+                    }
+                    .setNegativeButton(android.R.string.cancel) { dialog, id ->
+                        finish()
+                    }
+            builder.create().show()
+        }
     }
 
     private fun hideVirtualKey() {
@@ -217,9 +255,11 @@ class MainActivity : AppCompatActivity(),
         Log.i(TAG, "onMapReady")
         map ?: return
         mGoogleMap = map
-        mMarkerCollection = MarkerManager(mGoogleMap).newCollection()
 
+        mMarkerCollection = MarkerManager(mGoogleMap).newCollection()
         with(mGoogleMap) {
+            mapType = if (Utils.isNetWorkAvailable(this@MainActivity)) GoogleMap.MAP_TYPE_NORMAL else GoogleMap.MAP_TYPE_NONE
+
             setOnMarkerClickListener(this@MainActivity)
 
             setOnMyLocationButtonClickListener {
@@ -252,8 +292,10 @@ class MainActivity : AppCompatActivity(),
         Log.i(TAG, "onDestroy")
         super.onDestroy()
 
-        mLocationManager.removeUpdates(mLocationListener)
-        mLocationManager.unregisterGnssStatusCallback(mGnssStatusCallback)
+        mLocationManager?.removeUpdates(mLocationListener)
+        mLocationManager?.unregisterGnssStatusCallback(mGnssStatusCallback)
+
+        unregisterReceiver(mNetworkChangeReceiver)
     }
 
     override fun onBackPressed() {
@@ -295,7 +337,7 @@ class MainActivity : AppCompatActivity(),
                 if (PermissionUtils.isPermissionGranted(permissions, grantResults)) {
                     // Enable the my location layer if the permission has been granted.
                     enableMyLocation()
-                    requestLocationUpdates()
+                    checkLocationSetting()
                 } else {
                     // Display the missing permission error dialog when the fragments resume.
                     mPermissionDenied = true
@@ -309,16 +351,7 @@ class MainActivity : AppCompatActivity(),
 
         when (requestCode) {
             REQUEST_CHECK_SETTINGS -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        Log.i(TAG, "User agreed to make required location settings changes")
-                        requestLocationUpdates()
-                    }
-                    Activity.RESULT_CANCELED -> {
-                        Log.w(TAG, "User chose not to make required location settings changes")
-                        finish()
-                    }
-                }
+                checkLocationSetting()
             }
         }
     }
