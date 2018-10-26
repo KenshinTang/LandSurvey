@@ -17,6 +17,7 @@
     <string name="measuring">Measuring</string>
 
     <string name="gps_is_ready">GPS satellite connection is ready…</string>
+    <string name="gps_is_not_ready">Connecting to GPS…</string>
     <string name="area">Area</string>
     <string name="perimeter">Perimeter</string>
     <string name="start_measuring">Start</string>

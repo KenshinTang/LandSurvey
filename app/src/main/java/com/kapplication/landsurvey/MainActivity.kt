@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(),
     private var mLocationService: LocationService? = null
     private lateinit var mLocationReceiver: LocationReceiver
 
-    private var mCurrentLatLng: LatLng = CD
+    private var mCurrentLatLng: LatLng = LatLng(0.0, 0.0)
     private var mCurrentLocation: Location? = null
     private var mCurrentMode: Mode = Mode.AUTOMATIC
     private var mStartTime: String = ""
@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity(),
     private var mAreaTextView: TextView? = null
     private var mPerimeterTextView: TextView? = null
     private var mLatLngTextView: TextView? = null
+    private var mGPSInfoTextView: TextView? = null
     private var mPolyline: Polyline? = null
     private var mPolygon: Polygon? = null
 
@@ -111,8 +112,10 @@ class MainActivity : AppCompatActivity(),
                     mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
                     updateGPSInfo(mCurrentLocation)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
-                        val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                        mMarkerCollection?.addMarker(markerOption)
+                        if (mPath.size() == 1) {
+                            val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
+                            mMarkerCollection?.addMarker(markerOption)
+                        }
                     }
                 }
                 extras.containsKey(LocationService.KEY_SATELLITE_STATUS) -> {
@@ -178,6 +181,7 @@ class MainActivity : AppCompatActivity(),
         mAreaTextView = findViewById(R.id.textView_area_content)
         mPerimeterTextView = findViewById(R.id.textView_perimeter_content)
         mLatLngTextView = findViewById(R.id.textView_latlng)
+        mGPSInfoTextView = findViewById(R.id.textView_gps_info)
 
         mMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker)
         mFirstMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_first)
@@ -441,6 +445,8 @@ class MainActivity : AppCompatActivity(),
         if (mIsGetLocationFirstTime) {
             mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
+            mStartStopButton?.isEnabled = true
+            mGPSInfoTextView?.setText(R.string.gps_is_ready)
             mIsGetLocationFirstTime = false
         }
     }

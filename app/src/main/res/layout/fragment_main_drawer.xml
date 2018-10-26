@@ -199,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
 
-            android:text="@string/gps_is_ready"
+            android:text="@string/gps_is_not_ready"
             android:textAlignment="center"
 
             android:textAppearance="@android:style/TextAppearance.Widget.PopupMenu.Small"
