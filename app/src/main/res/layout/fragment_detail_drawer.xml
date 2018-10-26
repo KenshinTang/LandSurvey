@@ -180,7 +180,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_perimeter_content"
+            android:id="@+id/textView_perimeter_content_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -201,7 +201,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider3"
-            app:layout_constraintTop_toBottomOf="@+id/textView_perimeter_content" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_perimeter_content_detail" />
 
         <ImageView
             android:id="@+id/imageView_latitude"

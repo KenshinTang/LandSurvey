@@ -4,23 +4,26 @@ import android.Manifest
 import android.animation.Animator
 import android.app.Activity
 import android.app.DialogFragment
-import android.content.*
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.GnssStatus
 import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
-import android.os.IBinder
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,13 +31,15 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.MarkerManager
 import com.google.maps.android.SphericalUtil
+import com.kapplication.landsurvey.eviltransform.WGSPointer
 import com.kapplication.landsurvey.fragments.*
 import com.kapplication.landsurvey.model.Mode
 import com.kapplication.landsurvey.model.Path
 import com.kapplication.landsurvey.model.Record
-import com.kapplication.landsurvey.service.LocationService
 import com.kapplication.landsurvey.utils.PermissionUtils
 import com.kapplication.landsurvey.utils.Utils
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_main_drawer.*
 import mehdi.sakout.fancybuttons.FancyButton
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,92 +58,80 @@ class MainActivity : AppCompatActivity(),
         DetailDrawerFragment.OnShowSurveyDetailListener,
         DeleteDialogFragment.OnDeleteDialogListener {
 
-    private val CD = LatLng(30.542434, 104.073449)
     private val COLOR_LINE = Color.rgb(56,148,255)
     private val COLOR_AREA = Color.argb(100, 56,148,255)
 
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mContext: Context
 
-    private var mMarker: BitmapDescriptor? = null
-    private var mFirstMarker: BitmapDescriptor? = null
-    private var mLocationService: LocationService? = null
-    private lateinit var mLocationReceiver: LocationReceiver
+    private lateinit var mMarker: BitmapDescriptor
+    private lateinit var mFirstMarker: BitmapDescriptor
+    private lateinit var mMarkerCollection: MarkerManager.Collection
 
     private var mCurrentLatLng: LatLng = LatLng(0.0, 0.0)
-    private var mCurrentLocation: Location? = null
+    private lateinit var mCurrentLocation: Location
     private var mCurrentMode: Mode = Mode.AUTOMATIC
     private var mStartTime: String = ""
     private var mEndTime: String = ""
     private var mPerimeter: Double = 0.0
     private var mArea: Double = 0.0
+
     private var mAltitudes = ArrayList<Double>()
-
-    private var mPilingButton: FancyButton? = null
-    private var mStartStopButton: FancyButton? = null
-    private var mSatelliteTextView: TextView? = null
-    private var mPrecisionTextView: TextView? = null
-    private var mPointsTextView: TextView? = null
-    private var mAreaTextView: TextView? = null
-    private var mPerimeterTextView: TextView? = null
-    private var mLatLngTextView: TextView? = null
-    private var mGPSInfoTextView: TextView? = null
     private var mPolyline: Polyline? = null
-    private var mPolygon: Polygon? = null
 
-    private var mBoundOnLocationService = false
+    private var mPolygon: Polygon? = null
     private var mIsDrawerShowing = true
     private var mPermissionDenied = false
     private var mIsMeasuring = false
+
     private var mIsGetLocationFirstTime = true
-
     private val mPath: Path = Path()
-    private var mMarkerCollection: MarkerManager.Collection? = null
 
-    private inner class LocationReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "LocationReceiver(${intent.extras})")
-            val extras = intent.extras
-            when {
-//                extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
-//                    mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_LAST_LOCATION)
-//                    if (mCurrentLocation != null) {
-//                        updateGPSInfo(mCurrentLocation, true)
-//                        mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
-//                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
-//                    }
-//                }
-                extras.containsKey(LocationService.KEY_UPDATED_LOCATION) -> {
-                    mCurrentLocation = intent.getParcelableExtra(LocationService.KEY_UPDATED_LOCATION)
-                    mCurrentLatLng = LatLng(mCurrentLocation!!.latitude, mCurrentLocation!!.longitude)
-                    updateGPSInfo(mCurrentLocation)
-                    if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
-                        if (mPath.size() == 1) {
-                            val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
-                            mMarkerCollection?.addMarker(markerOption)
-                        }
-                    }
-                }
-                extras.containsKey(LocationService.KEY_SATELLITE_STATUS) -> {
-                    val satelliteCount = intent.getIntExtra(LocationService.KEY_SATELLITE_STATUS, 0)
-                    mSatelliteTextView?.text = satelliteCount.toString()
+    private lateinit var mLocationManager: LocationManager
+
+    private val mLocationListener = object: LocationListener {
+        override fun onLocationChanged(location: Location) {
+            val msg = "Updated Location: Latlng(${location.latitude}, ${location.longitude})," +
+                    " accuracy(${location.accuracy}), altitude(${location.altitude})," +
+                    " satellites(${location.extras?.getInt("satellites")})," +
+                    " extras(${location.extras?.toString()})"
+            Log.d(TAG, "onLocationChanged: $msg")
+
+            // convert wgs pointer the gcj pointer
+            val wgsPointer = WGSPointer(location.latitude, location.longitude)
+            val gcjPointer = wgsPointer.toGCJPointer()
+
+            location.latitude = gcjPointer.latitude
+            location.longitude = gcjPointer.longitude
+
+            mCurrentLocation = location
+            mCurrentLatLng = LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude)
+            updateGPSInfo(mCurrentLocation)
+            if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
+                if (mPath.size() == 1) {
+                    val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
+                    mMarkerCollection.addMarker(markerOption)
                 }
             }
         }
 
-    }
-
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as LocationService.LocationBinder
-            mLocationService = binder.getService()
-            mBoundOnLocationService = true
-            mLocationService?.setMainActivity(mContext as MainActivity)
+        override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+            Log.i(TAG, "onStatusChanged($p0: String?, $p1: Int, $p2: Bundle?)")
         }
 
-        override fun onServiceDisconnected(componentName: ComponentName) {
-            mBoundOnLocationService = false
+        override fun onProviderEnabled(p0: String?) {
+            Log.i(TAG, "onProviderEnabled($p0: String?)")
+        }
+
+        override fun onProviderDisabled(p0: String?) {
+            Log.i(TAG, "onProviderEnabled($p0: String?)")
+        }
+    }
+
+    private val mGnssStatusCallback = object : GnssStatus.Callback() {
+        override fun onSatelliteStatusChanged(status: GnssStatus?) {
+            super.onSatelliteStatusChanged(status)
+            textView_satellite_content.text = status?.satelliteCount.toString()
         }
     }
 
@@ -147,19 +140,24 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
 
         hideVirtualKey()
-
         setContentView(R.layout.activity_main)
-        mContext = this
-        mPath.setOnPathChangeListener(this)
-
-        initView()
+        init()
 
         PermissionUtils.checkPermissionAndRequest(this, PERMISSION_REQUEST_CODE, true)
 
-        mLocationReceiver = LocationReceiver()
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, IntentFilter(LocationService.ACTION_LOCATION))
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        mLocationManager.registerGnssStatusCallback(mGnssStatusCallback)
+        requestLocationUpdates()
+    }
 
-        bindService(Intent(this, LocationService::class.java), mConnection, Context.BIND_AUTO_CREATE)
+    private fun requestLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, mLocationListener)
     }
 
     private fun hideVirtualKey() {
@@ -169,45 +167,33 @@ class MainActivity : AppCompatActivity(),
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
 
-    private fun initView() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+    private fun init() {
+        mContext = this
+        mPath.setOnPathChangeListener(this)
+
+        // use custom title bar
         toolbar.title = ""
         setSupportActionBar(toolbar)
-
-        mPilingButton = findViewById(R.id.button_piling)
-        mStartStopButton = findViewById(R.id.button_start_stop)
-        mSatelliteTextView = findViewById(R.id.textView_satellite_content)
-        mPrecisionTextView = findViewById(R.id.textView_precision_content)
-        mPointsTextView = findViewById(R.id.textView_points_content)
-        mAreaTextView = findViewById(R.id.textView_area_content)
-        mPerimeterTextView = findViewById(R.id.textView_perimeter_content)
-        mLatLngTextView = findViewById(R.id.textView_latlng)
-        mGPSInfoTextView = findViewById(R.id.textView_gps_info)
 
         mMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker)
         mFirstMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_first)
 
-        val drawerLayout: LinearLayout = findViewById(R.id.layout_drawer)
-        val modeLayout: LinearLayout = findViewById(R.id.layout_mode)
-        val drawerHandler: ImageView = findViewById(R.id.imageView_drawer_handler)
+        imageView_drawer_handler.setOnClickListener {
+            layout_drawer.animate().translationX(if (mIsDrawerShowing) -360f else 0f)?.start()
+            layout_mode.animate().translationX(if (mIsDrawerShowing) -160f else 0f)?.start()
+            mIsDrawerShowing = !mIsDrawerShowing
+        }
 
-        val drawerLayoutAnimator = drawerLayout.animate()
-        val modeLayoutAnimator = modeLayout.animate()
-
-        drawerLayoutAnimator?.setListener(object: Animator.AnimatorListener {
+        layout_drawer.animate().setListener(object: Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {}
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationStart(p0: Animator?) {}
 
             override fun onAnimationEnd(p0: Animator?) {
-                drawerHandler.setImageResource(if (mIsDrawerShowing) R.drawable.arrow_left else R.drawable.arrow_right)
+                imageView_drawer_handler.setImageResource(if (mIsDrawerShowing) R.drawable.arrow_left else R.drawable.arrow_right)
             }
         })
-        drawerHandler.setOnClickListener {
-            drawerLayoutAnimator?.translationX(if (mIsDrawerShowing) -360f else 0f)?.start()
-            modeLayoutAnimator?.translationX(if (mIsDrawerShowing) -160f else 0f)?.start()
-            mIsDrawerShowing = !mIsDrawerShowing
-        }
+
 
         val mapFragment: SupportMapFragment? = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment?.getMapAsync(this)
@@ -241,15 +227,11 @@ class MainActivity : AppCompatActivity(),
                 true
             }
 
-//            setOnMyLocationClickListener {
-//                Toast.makeText(mContext, "Current location: ${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
-//            }
-
             setOnMapLongClickListener {
                 if (mCurrentMode == Mode.MANUAL && mIsMeasuring) {
                     mPath.add(it)
                     val markerOption = MarkerOptions().position(it).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                    mMarkerCollection?.addMarker(markerOption)
+                    mMarkerCollection.addMarker(markerOption)
                 }
             }
         }
@@ -267,17 +249,15 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onDestroy() {
+        Log.i(TAG, "onDestroy")
         super.onDestroy()
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocationReceiver)
-
-        if (mBoundOnLocationService) {
-            unbindService(mConnection)
-            mBoundOnLocationService = false
-        }
+        mLocationManager.removeUpdates(mLocationListener)
+        mLocationManager.unregisterGnssStatusCallback(mGnssStatusCallback)
     }
 
     override fun onBackPressed() {
+        Log.i(TAG, "onBackPressed")
         super.onBackPressed()
     }
 
@@ -315,7 +295,7 @@ class MainActivity : AppCompatActivity(),
                 if (PermissionUtils.isPermissionGranted(permissions, grantResults)) {
                     // Enable the my location layer if the permission has been granted.
                     enableMyLocation()
-                    mLocationService?.startLocationUpdate()
+                    requestLocationUpdates()
                 } else {
                     // Display the missing permission error dialog when the fragments resume.
                     mPermissionDenied = true
@@ -332,7 +312,7 @@ class MainActivity : AppCompatActivity(),
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         Log.i(TAG, "User agreed to make required location settings changes")
-                        mLocationService?.startLocationUpdate()
+                        requestLocationUpdates()
                     }
                     Activity.RESULT_CANCELED -> {
                         Log.w(TAG, "User chose not to make required location settings changes")
@@ -354,17 +334,17 @@ class MainActivity : AppCompatActivity(),
                     R.id.radio_auto -> {
                         Log.d(TAG, "Change to auto mode.")
                         mCurrentMode = Mode.AUTOMATIC
-                        mPilingButton?.isEnabled = false
+                        button_piling.isEnabled = false
                     }
                     R.id.radio_piling -> {
                         Log.d(TAG, "Change to piling mode.")
                         mCurrentMode = Mode.PILING
-                        mPilingButton?.isEnabled = true
+                        button_piling.isEnabled = true
                     }
                     R.id.radio_manual -> {
                         Log.d(TAG, "Change to manual mode.")
                         mCurrentMode = Mode.MANUAL
-                        mPilingButton?.isEnabled = false
+                        button_piling.isEnabled = false
                     }
                 }
             }
@@ -410,20 +390,20 @@ class MainActivity : AppCompatActivity(),
         mPath.clear()
         mAltitudes.clear()
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        mStartStopButton?.setIconResource(R.drawable.stop)
-        mStartStopButton?.setText(resources.getString(R.string.stop_measuring))
-        mStartStopButton?.setBackgroundColor(getColor(R.color.stopButtonColor))
+        button_start_stop.setIconResource(R.drawable.stop)
+        button_start_stop.setText(resources.getString(R.string.stop_measuring))
+        button_start_stop.setBackgroundColor(getColor(R.color.stopButtonColor))
         mIsMeasuring = true
         mStartTime = Utils.formatTime(System.currentTimeMillis())
     }
 
     private fun stopMeasuring() {
-        mStartStopButton?.setIconResource(R.drawable.start)
-        mStartStopButton?.setText(resources.getString(R.string.start_measuring))
-        mStartStopButton?.setBackgroundColor(getColor(R.color.defaultButtonColor))
+        button_start_stop.setIconResource(R.drawable.start)
+        button_start_stop.setText(resources.getString(R.string.start_measuring))
+        button_start_stop.setBackgroundColor(getColor(R.color.defaultButtonColor))
         //String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
-        mAreaTextView?.text = Utils.convertArea(this, SphericalUtil.computeArea(mPath.getList()), 2)
-        mPerimeterTextView?.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
+        textView_area_content_main.text = Utils.convertArea(this, SphericalUtil.computeArea(mPath.getList()), 2)
+        textView_perimeter_content_main.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
         if (!mPath.getList().isEmpty()) {
             mPolygon = mGoogleMap.addPolygon(PolygonOptions()
                     .addAll(mPath.getList())
@@ -446,12 +426,12 @@ class MainActivity : AppCompatActivity(),
     private fun updateGPSInfo(location: Location?) {
         location ?: return
         updateAltitudeRange(location.altitude)
-        mPrecisionTextView?.text = (location.accuracy.toInt().toString() + "m")
+        textView_precision_content.text = (location.accuracy.toInt().toString() + "m")
         if (mIsGetLocationFirstTime) {
-            mLatLngTextView?.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
+            textView_latlng.text = String.format("%.6f", location.latitude) + ", " + String.format("%.6f", location.longitude)
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, 18f))
-            mStartStopButton?.isEnabled = true
-            mGPSInfoTextView?.setText(R.string.gps_is_ready)
+            button_start_stop.isEnabled = true
+            textView_gps_info.setText(R.string.gps_is_ready)
             mIsGetLocationFirstTime = false
         }
     }
@@ -489,12 +469,12 @@ class MainActivity : AppCompatActivity(),
         mPerimeter = SphericalUtil.computeLength(mPath.getList())
         mArea = SphericalUtil.computeArea(mPath.getList())
 
-        mPerimeterTextView?.text = "${String.format("%.2f",mPerimeter)}m"
-        mAreaTextView?.text = Utils.convertArea(this, mArea, 2)
+        textView_perimeter_content_main.text = "${String.format("%.2f",mPerimeter)}m"
+        textView_area_content_main.text = Utils.convertArea(this, mArea, 2)
 
-        mPointsTextView?.text = mPath.getList().size.toString()
+        textView_points_content.text = mPath.getList().size.toString()
         if (!mPath.getList().isEmpty()) {
-            mLatLngTextView?.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
+            textView_latlng.text = String.format("%.6f", mPath.getList().last?.latitude) + ", " +
                     String.format("%.6f", mPath.getList().last?.longitude)
         }
     }

@@ -75,7 +75,24 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
 
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+//        mLocationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, object:android.location.LocationListener {
+//            override fun onLocationChanged(p0: Location?) {
+//                this@LocationService.onLocationChanged(p0)
+//            }
+//
+//            override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+//                Log.i(TAG, "onStatusChanged($p0: String?, $p1: Int, $p2: Bundle?)")
+//            }
+//
+//            override fun onProviderEnabled(p0: String?) {
+//                Log.i(TAG, "onProviderEnabled($p0: String?)")
+//            }
+//
+//            override fun onProviderDisabled(p0: String?) {
+//                Log.i(TAG, "onProviderEnabled($p0: String?)")
+//            }
+//
+//        })
         mGoogleApiClient?.connect()
     }
 
