@@ -46,6 +46,7 @@ private const val REQUEST_CHECK_SETTINGS = 2
 
 class MainActivity : AppCompatActivity(),
         OnMapReadyCallback,
+        GoogleMap.OnMapLoadedCallback,
         Path.OnPathChangeListener,
         GoogleMap.OnMarkerClickListener,
         SaveDialogFragment.SaveDialogListener,
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(),
 
     private inner class LocationReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "LocationReceiver($intent)")
+            Log.d(TAG, "LocationReceiver(${intent.extras})")
             val extras = intent.extras
             when {
 //                extras.containsKey(LocationService.KEY_LAST_LOCATION) -> {
@@ -254,6 +255,10 @@ class MainActivity : AppCompatActivity(),
         }
 
         enableMyLocation()
+    }
+
+    override fun onMapLoaded() {
+        Log.i(TAG, "onMapLoaded")
     }
 
     override fun onPause() {
