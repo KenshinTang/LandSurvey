@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.kapplication.landsurvey.MainActivity
+import com.kapplication.landsurvey.eviltransform.WGSPointer
 
 private const val TAG = "LocationService"
 
@@ -74,7 +75,24 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
         }
 
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+//        mLocationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, object:android.location.LocationListener {
+//            override fun onLocationChanged(p0: Location?) {
+//                this@LocationService.onLocationChanged(p0)
+//            }
+//
+//            override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+//                Log.i(TAG, "onStatusChanged($p0: String?, $p1: Int, $p2: Bundle?)")
+//            }
+//
+//            override fun onProviderEnabled(p0: String?) {
+//                Log.i(TAG, "onProviderEnabled($p0: String?)")
+//            }
+//
+//            override fun onProviderDisabled(p0: String?) {
+//                Log.i(TAG, "onProviderEnabled($p0: String?)")
+//            }
+//
+//        })
         mGoogleApiClient?.connect()
     }
 
@@ -175,6 +193,15 @@ class LocationService : Service(), GoogleApiClient.ConnectionCallbacks, GoogleAp
                 " satellites(${location.extras?.getInt("satellites")})," +
                 " extras(${location.extras?.toString()})"
         Log.d(TAG, "onLocationChanged: $msg")
+
+        // convert wgs pointer the gcj pointer
+        val wgsPointer = WGSPointer(location.latitude, location.longitude)
+        val gcjPointer = wgsPointer.toGCJPointer()
+
+        location.latitude = gcjPointer.latitude
+        location.longitude = gcjPointer.longitude
+
+        Log.e(TAG, "WGS($wgsPointer) --> GCJ($gcjPointer)")
 
         val intent = Intent(ACTION_LOCATION).putExtra(KEY_UPDATED_LOCATION, location)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)

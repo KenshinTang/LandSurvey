@@ -52,7 +52,7 @@ class DetailDrawerFragment : Fragment() {
         view.findViewById<TextView>(R.id.textView_title).text = record?.name
         view.findViewById<TextView>(R.id.textView_altitude_content).text = record?.altitudeRange
         view.findViewById<TextView>(R.id.textView_area_content).text = Utils.convertArea(this.context!!, record?.area!!, 2)
-        view.findViewById<TextView>(R.id.textView_perimeter_content).text = "${record?.perimeter}m"
+        view.findViewById<TextView>(R.id.textView_perimeter_content_detail).text = "${record?.perimeter}m"
         mLatitudeTextView?.text = record?.points?.last?.latitude.toString()
         mLongitudeTextView?.text = record?.points?.last?.longitude.toString()
         view.findViewById<TextView>(R.id.textView_start_time_content).text = record?.startTime

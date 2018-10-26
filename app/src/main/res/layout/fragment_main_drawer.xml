@@ -199,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
 
-            android:text="@string/gps_is_ready"
+            android:text="@string/gps_is_not_ready"
             android:textAlignment="center"
 
             android:textAppearance="@android:style/TextAppearance.Widget.PopupMenu.Small"
@@ -256,7 +256,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view_divider4" />
 
         <TextView
-            android:id="@+id/textView_area_content"
+            android:id="@+id/textView_area_content_main"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_marginTop="87dp"
@@ -291,7 +291,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view_divider4" />
 
         <TextView
-            android:id="@+id/textView_perimeter_content"
+            android:id="@+id/textView_perimeter_content_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="87dp"
