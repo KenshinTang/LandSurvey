@@ -159,13 +159,13 @@ class MainActivity : AppCompatActivity(),
         hideVirtualKey()
         setContentView(R.layout.activity_main)
         init()
+        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         PermissionUtils.checkPermissionAndRequest(this, PERMISSION_REQUEST_CODE, true)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         checkLocationSetting()
         registerReceiver(mNetworkChangeReceiver, IntentFilter().apply {
             addAction(ConnectivityManager.CONNECTIVITY_ACTION)
@@ -388,7 +388,7 @@ class MainActivity : AppCompatActivity(),
                     if (mIsMeasuring) {
                         mPath.add(mCurrentLatLng)
                         val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
-                        mMarkerCollection?.addMarker(markerOption)
+                        mMarkerCollection.addMarker(markerOption)
                     }
                 }
                 R.id.button_start_stop -> {
