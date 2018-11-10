@@ -21,10 +21,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.Toast
@@ -156,7 +153,7 @@ class MainActivity : AppCompatActivity(),
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
-        hideVirtualKey()
+        hideSystemTitle()
         setContentView(R.layout.activity_main)
         init()
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -198,11 +195,9 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun hideVirtualKey() {
-        val decorView: View = window.decorView
-        val uiOptions:Int = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION).or(View.SYSTEM_UI_FLAG_FULLSCREEN).or(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        decorView.systemUiVisibility = uiOptions
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+    private fun hideSystemTitle() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
     private fun init() {
