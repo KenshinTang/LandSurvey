@@ -56,7 +56,7 @@
         <ImageView
             android:id="@+id/imageView_drawer_handler"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/arrow_left" />
     </LinearLayout>
@@ -116,7 +116,7 @@
             android:layout_width="@dimen/button_width_default"
             android:layout_height="@dimen/button_height_default"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/radio_button1_marginStart"
+            android:layout_marginStart="@dimen/radio_button2_marginStart"
             android:enabled="false"
 
             fancy:fb_borderColor="#FFFFFF"
@@ -136,7 +136,7 @@
             android:layout_width="@dimen/button_width_default"
             android:layout_height="@dimen/button_height_default"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/radio_button1_marginStart"
+            android:layout_marginStart="@dimen/radio_button2_marginStart"
 
             android:paddingStart="-20dp"
             fancy:fb_borderColor="#FFFFFF"
@@ -151,7 +151,8 @@
             fancy:fb_iconPaddingTop="5dp"
             fancy:fb_iconPaddingRight="0dp"
             fancy:fb_iconPaddingLeft="1dp"
-            android:onClick="onButtonClick"/>
+            android:onClick="onButtonClick"
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
 
     <ImageView

@@ -10,15 +10,15 @@
     <dimen name="drawer_fragment_width">240dp</dimen>
     <dimen name="mode_layout_width">506.67dp</dimen>
     <dimen name="mode_layout_height">60dp</dimen>
-    <dimen name="mode_layout_marginEnd">66.67dp</dimen>
+    <dimen name="mode_layout_marginEnd">75dp</dimen>
     <dimen name="mode_layout_marginBottom">11.33dp</dimen>
-    <dimen name="radio_button1_marginStart">20dp</dimen>
-    <dimen name="radio_button2_marginStart">13.33dp</dimen>
-    <dimen name="radio_button3_marginStart">16.67dp</dimen>
+    <dimen name="radio_button1_marginStart">15dp</dimen>
+    <dimen name="radio_button2_marginStart">10dp</dimen>
+    <dimen name="radio_button3_marginStart">10dp</dimen>
     <dimen name="button_width_default">86.67dp</dimen>
     <dimen name="button_height_default">36dp</dimen>
-    <dimen name="button_radius">18dp</dimen>
-    <dimen name="switcher_width">30dp</dimen>
-    <dimen name="switcher_marginTop">73.33dp</dimen>
-    <dimen name="switcher_marginEnd">5.33dp</dimen>
+    <dimen name="button_radius">16dp</dimen>
+    <dimen name="switcher_width">45dp</dimen>
+    <dimen name="switcher_marginTop">90dp</dimen>
+    <dimen name="switcher_marginEnd">8dp</dimen>
 </resources>
