@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="360dp"
-    android:layout_height="130dp">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/record_item_height">
 
     <TextView
         android:id="@+id/textView_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginStart="@dimen/record_marginStart"
+        android:layout_marginTop="@dimen/record_marginTop"
         android:text="Auto_20181008104321"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="18sp"
+        android:textSize="@dimen/textSize_small"
         android:textColor="@color/textColor"
         android:textStyle="bold"/>
 
@@ -21,40 +21,40 @@
         android:id="@+id/textView_perimeter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="58dp"
+        android:layout_marginStart="@dimen/record_marginStart"
+        android:layout_marginTop="@dimen/record_detail_marginTop"
         android:text="Length: 1245.312m"
+        android:textSize="@dimen/textSize_little"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="14sp"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView_name" />
 
     <TextView
         android:id="@+id/textView_area"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
-        android:layout_marginEnd="38dp"
+        android:layout_marginTop="@dimen/record_detail_marginTop"
+        android:layout_marginEnd="@dimen/record_marginEnd"
         android:text="Area:232.2㎡"
+        android:textSize="@dimen/textSize_little"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="14sp"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView_name" />
 
     <TextView
         android:id="@+id/textView_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginStart="@dimen/record_marginStart"
+        android:layout_marginTop="@dimen/record_detail_marginTop"
         android:text="Save Time: 2018-10-08 10:43:21"
+        android:textSize="@dimen/textSize_little"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="14sp"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView_perimeter" />
 
     <View
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="129dp"
+        android:layout_marginTop="@dimen/record_divider_marginTop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

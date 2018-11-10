@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/drawer_title_height"
         android:orientation="horizontal"
         android:background="#33BFBFBF">
 
@@ -18,11 +18,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
-            android:paddingStart="20dp"
-            android:paddingEnd="12dp"
+            android:paddingStart="@dimen/up_button_paddingStart"
+            android:paddingEnd="@dimen/up_button_paddingEnd"
             android:text="@string/up"
             android:fontFamily="@font/dinbold"
-            android:textSize="24sp"
+            android:textSize="@dimen/textSize_normal"
             android:clickable="true"/>
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_gravity="center_vertical|start"
             android:text="@string/history_record"
             android:textStyle="bold"
-            android:textSize="24sp"/>
+            android:textSize="@dimen/textSize_normal"/>
     </LinearLayout>
 
     <View

@@ -2,6 +2,7 @@
 <resources>
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_small">12sp</dimen>
+    <dimen name="textSize_little">9.33sp</dimen>
     <dimen name="textSize_tiny">8sp</dimen>
 
     <dimen name="button_width_default">86.67dp</dimen>
@@ -44,4 +45,15 @@
     <dimen name="area_marginTop">24dp</dimen>
     <dimen name="area_main_content_marginTop">58dp</dimen>
     <dimen name="area_title_marginTop">81.33dp</dimen>
+
+    <!-- list drawer-->
+    <dimen name="drawer_title_height">48dp</dimen>
+    <dimen name="up_button_paddingStart">13.33dp</dimen>
+    <dimen name="up_button_paddingEnd">8dp</dimen>
+    <dimen name="record_item_height">80dp</dimen>
+    <dimen name="record_marginStart">20dp</dimen>
+    <dimen name="record_marginTop">13dp</dimen>
+    <dimen name="record_detail_marginTop">7dp</dimen>
+    <dimen name="record_marginEnd">20dp</dimen>
+    <dimen name="record_divider_marginTop">79dp</dimen>
 </resources>

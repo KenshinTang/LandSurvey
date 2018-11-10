@@ -33,7 +33,7 @@ class RecordAdapter(private val mRecordList: List<Record>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         holder.item.findViewById<TextView>(R.id.textView_name).text = mRecordList[position].name
-        holder.item.findViewById<TextView>(R.id.textView_perimeter).text = "Perimeter: ${mRecordList[position].perimeter}m"
+        holder.item.findViewById<TextView>(R.id.textView_perimeter).text = "Perimeter: ${String.format("%.2f m", mRecordList[position].perimeter) }"
         holder.item.findViewById<TextView>(R.id.textView_area).text = "Area: ${Utils.convertArea(mContext!!, mRecordList[position].area, 2)}"
         holder.item.findViewById<TextView>(R.id.textView_time).text = "Save Time: ${mRecordList[position].endTime}"
         holder.item.setBackgroundResource(if (position.rem(2) == 1) R.color.list_item_background else android.R.color.white)
