@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mMarkerCollection: MarkerManager.Collection
 
     private var mCurrentLatLng: LatLng = LatLng(0.0, 0.0)
-    private lateinit var mCurrentLocation: Location
+    private var mCurrentLocation: Location? = null
     private var mCurrentMode: Mode = Mode.AUTOMATIC
     private var mStartTime: String = ""
     private var mEndTime: String = ""
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(),
             location.longitude = gcjPointer.longitude
 
             mCurrentLocation = location
-            mCurrentLatLng = LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude)
+            mCurrentLatLng = LatLng(mCurrentLocation?.latitude!!, mCurrentLocation?.longitude!!)
             updateGPSInfo(mCurrentLocation)
             if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
                 if (mPath.size() == 1) {
