@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="360dp"
-    android:layout_height="720dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/white"
     tools:context=".fragments.DetailDrawerFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/drawer_title_height"
         android:orientation="horizontal"
         android:background="#33BFBFBF">
 
@@ -19,11 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
-            android:paddingStart="20dp"
-            android:paddingEnd="12dp"
+            android:paddingStart="@dimen/up_button_paddingStart"
+            android:paddingEnd="@dimen/up_button_paddingEnd"
             android:text="@string/up"
             android:fontFamily="@font/dinbold"
-            android:textSize="24sp"
+            android:textSize="@dimen/textSize_normal"
             android:clickable="true"/>
 
         <TextView
@@ -33,18 +33,18 @@
             android:layout_gravity="center_vertical|start"
             android:text="DetailPage"
             android:textStyle="bold"
-            android:textSize="24sp"/>
+            android:textSize="@dimen/textSize_normal"/>
     </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="347dp">
+        android:layout_height="@dimen/altitude_range_layout_height">
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="155dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="94dp"
+            android:layout_width="@dimen/altitude_icon_width"
+            android:layout_height="@dimen/altitude_icon_height"
+            android:layout_marginTop="@dimen/altitude_icon_marginTop"
             android:src="@drawable/altitude_range"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,11 +54,11 @@
             android:id="@+id/textView_altitude_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="@dimen/altitude_content_marginTop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
-            android:textSize="32sp"
+            android:textSize="@dimen/textSize_large"
             android:textColor="@color/textColor"
             android:fontFamily="@font/dinbold"/>
 
@@ -66,13 +66,13 @@
             android:id="@+id/textView_altitude_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="@dimen/altitude_title_marginTop"
             android:text="@string/altitude_range"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_altitude_content"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/textSize_little"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -82,9 +82,9 @@
 
         <View
             android:id="@+id/view_divider"
-            android:layout_width="300dp"
+            android:layout_width="@dimen/detail_divider_width"
             android:layout_height="1dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="@dimen/detail_divider_marginTop"
             android:background="#1AC5C5C5"
             android:clickable="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,9 +93,9 @@
 
         <View
             android:id="@+id/view_divider2"
-            android:layout_width="300dp"
+            android:layout_width="@dimen/detail_divider_width"
             android:layout_height="1dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="@dimen/detail_divider_marginTop"
             android:background="#1AC5C5C5"
             android:clickable="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +105,7 @@
         <View
             android:id="@+id/view_divider3"
             android:layout_width="1dp"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/detail_divider_height"
             android:background="#1AC5C5C5"
             android:clickable="false"
             app:layout_constraintBottom_toTopOf="@+id/view_divider"
@@ -116,7 +116,7 @@
         <View
             android:id="@+id/view_divider4"
             android:layout_width="1dp"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/detail_divider_height"
             android:background="#1AC5C5C5"
             android:clickable="false"
             app:layout_constraintBottom_toTopOf="@+id/view_divider2"
@@ -127,7 +127,7 @@
         <View
             android:id="@+id/view_divider5"
             android:layout_width="1dp"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/detail_divider_height"
             android:background="#1AC5C5C5"
             android:clickable="false"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -137,9 +137,9 @@
 
         <ImageView
             android:id="@+id/imageView_area"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/area"
             app:layout_constraintEnd_toStartOf="@+id/view_divider3"
             app:layout_constraintStart_toStartOf="parent"
@@ -149,10 +149,10 @@
             android:id="@+id/textView_area_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toStartOf="@+id/view_divider3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_area" />
@@ -161,19 +161,19 @@
             android:id="@+id/textView_area_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/area"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toStartOf="@+id/view_divider3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_area_content" />
 
         <ImageView
             android:id="@+id/imageView_perimeter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/perimeter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider3"
@@ -183,10 +183,10 @@
             android:id="@+id/textView_perimeter_content_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider3"
             app:layout_constraintTop_toBottomOf="@+id/imageView_perimeter"/>
@@ -195,19 +195,19 @@
             android:id="@+id/textView_perimeter_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/perimeter"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider3"
             app:layout_constraintTop_toBottomOf="@+id/textView_perimeter_content_detail" />
 
         <ImageView
             android:id="@+id/imageView_latitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/latitude"
             app:layout_constraintEnd_toStartOf="@+id/view_divider4"
             app:layout_constraintStart_toStartOf="parent"
@@ -217,10 +217,10 @@
             android:id="@+id/textView_latitude_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toStartOf="@+id/view_divider4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_latitude" />
@@ -229,19 +229,19 @@
             android:id="@+id/textView_latitude_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/latitude"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toStartOf="@+id/view_divider4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_latitude_content" />
 
         <ImageView
             android:id="@+id/imageView_longitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/longitude"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider4"
@@ -251,10 +251,10 @@
             android:id="@+id/textView_longitude_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider4"
             app:layout_constraintTop_toBottomOf="@+id/imageView_longitude" />
@@ -263,19 +263,19 @@
             android:id="@+id/textView_longitude_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/longitude"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider4"
             app:layout_constraintTop_toBottomOf="@+id/textView_longitude_content" />
 
         <ImageView
             android:id="@+id/imageView_start_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/time"
             app:layout_constraintEnd_toStartOf="@+id/view_divider5"
             app:layout_constraintStart_toStartOf="parent"
@@ -285,10 +285,10 @@
             android:id="@+id/textView_start_time_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toStartOf="@+id/view_divider5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_start_time" />
@@ -297,19 +297,19 @@
             android:id="@+id/textView_start_time_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/start_time"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toStartOf="@+id/view_divider5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_start_time_content" />
 
         <ImageView
             android:id="@+id/imageView_end_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
+            android:layout_width="@dimen/icon_width"
+            android:layout_height="@dimen/icon_width"
+            android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider5"
@@ -319,10 +319,10 @@
             android:id="@+id/textView_end_time_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/detail_content_marginTop"
             android:fontFamily="@font/dinbold"
             android:textColor="@color/textColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/textSize_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider5"
             app:layout_constraintTop_toBottomOf="@+id/imageView_end_time" />
@@ -331,10 +331,10 @@
             android:id="@+id/textView_end_time_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/detail_title_marginTop"
             android:text="@string/end_time"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            android:textSize="14sp"
+            android:textSize="@dimen/textSize_little"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_divider5"
             app:layout_constraintTop_toBottomOf="@+id/textView_end_time_content" />

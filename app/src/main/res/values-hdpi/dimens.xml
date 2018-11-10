@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="textSize_large">21.33sp</dimen>
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_small">12sp</dimen>
     <dimen name="textSize_little">9.33sp</dimen>
@@ -7,6 +8,8 @@
 
     <dimen name="button_width_default">86.67dp</dimen>
     <dimen name="button_height_default">36dp</dimen>
+
+    <dimen name="icon_width">21.33dp</dimen>
 
     <!-- main activity-->
     <dimen name="map_margin_top">36.67dp</dimen>
@@ -34,7 +37,6 @@
     <dimen name="gps_info_icon_marginTop">22.67dp</dimen>
     <dimen name="gps_info_content_marginTop">46.67dp</dimen>
     <dimen name="gps_info_title_marginTop">68dp</dimen>
-    <dimen name="icon_width">21.33dp</dimen>
     <dimen name="satellite_state_marginTop">30dp</dimen>
     <dimen name="latlng_marginTop">24dp</dimen>
     <dimen name="gps_info_text_width">110dp</dimen>
@@ -56,4 +58,18 @@
     <dimen name="record_detail_marginTop">7dp</dimen>
     <dimen name="record_marginEnd">20dp</dimen>
     <dimen name="record_divider_marginTop">79dp</dimen>
+
+    <!-- detail drawer-->
+    <dimen name="altitude_range_layout_height">195dp</dimen>
+    <dimen name="altitude_icon_width">103dp</dimen>
+    <dimen name="altitude_icon_height">66.67dp</dimen>
+    <dimen name="altitude_icon_marginTop">45dp</dimen>
+    <dimen name="altitude_content_marginTop">14dp</dimen>
+    <dimen name="altitude_title_marginTop">7.33dp</dimen>
+    <dimen name="detail_divider_width">200dp</dimen>
+    <dimen name="detail_divider_height">26.67dp</dimen>
+    <dimen name="detail_divider_marginTop">66.67dp</dimen>
+    <dimen name="detail_icon_marginTop">6dp</dimen>
+    <dimen name="detail_content_marginTop">4dp</dimen>
+    <dimen name="detail_title_marginTop">2dp</dimen>
 </resources>
