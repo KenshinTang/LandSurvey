@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textSize_large">21.33sp</dimen>
+    <dimen name="textSize_major">18.67sp</dimen>
     <dimen name="textSize_normal">16sp</dimen>
     <dimen name="textSize_small">12sp</dimen>
     <dimen name="textSize_little">9.33sp</dimen>
@@ -72,4 +73,17 @@
     <dimen name="detail_icon_marginTop">6dp</dimen>
     <dimen name="detail_content_marginTop">4dp</dimen>
     <dimen name="detail_title_marginTop">2dp</dimen>
+
+    <!-- dialog-->
+    <dimen name="save_dialog_width">320dp</dimen>
+    <dimen name="save_dialog_height">213.33dp</dimen>
+    <dimen name="dialog_title_marginStart">40dp</dimen>
+    <dimen name="dialog_title_marginTop">12dp</dimen>
+    <dimen name="edit_width">360dp</dimen>
+    <dimen name="edit_height">47.33dp</dimen>
+    <dimen name="edit_marginTop">28.67dp</dimen>
+    <dimen name="edit_marginStart">40dp</dimen>
+    <dimen name="edit_paddingStart">6.67dp</dimen>
+    <dimen name="save_button_height">52dp</dimen>
+    <dimen name="save_button_marginTop">45.33dp</dimen>
 </resources>

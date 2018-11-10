@@ -33,7 +33,7 @@
         android:layout_marginBottom="32dp"
         android:layout_marginTop="32dp"
         android:layout_gravity="center"
-        android:src="@drawable/delelte"
+        android:src="@drawable/delete"
         android:clickable="true"
         />
 </LinearLayout>
