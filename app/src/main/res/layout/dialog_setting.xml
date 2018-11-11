@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="320dp"
+    android:layout_width="@dimen/save_dialog_height"
     android:layout_height="wrap_content"
     android:elevation="2dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:layout_marginStart="45dp"
+        android:layout_marginTop="@dimen/dialog_title_marginTop"
+        android:layout_marginStart="@dimen/dialog_title_marginStart"
         android:text="@string/area_unit"
-        android:textSize="28sp"
+        android:textSize="@dimen/textSize_major"
         android:textColor="@color/textColor"
         />
 
@@ -19,44 +19,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="@dimen/radio_group_marginTop"
+        android:layout_marginBottom="@dimen/radio_group_marginBottom"
         android:checkedButton="@id/radio_acre">
         <RadioButton
             android:id="@+id/radio_acre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="60dp"
-            android:paddingStart="20dp"
+            android:layout_marginBottom="@dimen/radio_marginBottom"
+            android:layout_marginStart="@dimen/radio_marginStart"
+            android:paddingStart="@dimen/radio_paddingStart"
             android:text="@string/unit_acre"
             android:textColor="@color/textColor"
-            android:textSize="22sp"/>
+            android:textSize="@dimen/textSize_normal"/>
         <RadioButton
             android:id="@+id/radio_sqmi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="60dp"
-            android:paddingStart="20dp"
+            android:layout_marginBottom="@dimen/radio_marginBottom"
+            android:layout_marginStart="@dimen/radio_marginStart"
+            android:paddingStart="@dimen/radio_paddingStart"
             android:text="@string/unit_sqmi"
             android:textColor="@color/textColor"
-            android:textSize="22sp"/>
+            android:textSize="@dimen/textSize_normal"/>
         <RadioButton
             android:id="@+id/radio_sqft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="60dp"
-            android:paddingStart="20dp"
+            android:layout_marginBottom="@dimen/radio_marginBottom"
+            android:layout_marginStart="@dimen/radio_marginStart"
+            android:paddingStart="@dimen/radio_paddingStart"
             android:text="@string/unit_sqft"
             android:textColor="@color/textColor"
-            android:textSize="22sp"/>
+            android:textSize="@dimen/textSize_normal"/>
     </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="78dp"
+        android:layout_height="@dimen/save_button_height"
         android:orientation="horizontal">
         <Button
             android:id="@+id/button_cancel"
@@ -66,7 +66,7 @@
             android:layout_weight="1"
             android:background="@drawable/save_dialog_button_background"
             android:textAllCaps="false"
-            android:textSize="24sp"
+            android:textSize="@dimen/textSize_major"
             android:textColor="@color/textColor"/>
         <Button
             android:id="@+id/button_save"
@@ -76,7 +76,7 @@
             android:layout_weight="1"
             android:background="@drawable/save_dialog_button_background"
             android:textAllCaps="false"
-            android:textSize="24sp"
+            android:textSize="@dimen/textSize_major"
             android:textColor="@color/defaultButtonColor"/>
     </LinearLayout>
 </LinearLayout>

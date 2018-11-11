@@ -86,4 +86,9 @@
     <dimen name="edit_paddingStart">10dp</dimen>
     <dimen name="save_button_height">78dp</dimen>
     <dimen name="save_button_marginTop">68dp</dimen>
+    <dimen name="radio_group_marginTop">20dp</dimen>
+    <dimen name="radio_group_marginBottom">30dp</dimen>
+    <dimen name="radio_marginBottom">10dp</dimen>
+    <dimen name="radio_marginStart">60dp</dimen>
+    <dimen name="radio_paddingStart">20dp</dimen>
 </resources>
