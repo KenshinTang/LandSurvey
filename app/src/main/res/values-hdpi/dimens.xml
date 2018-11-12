@@ -25,9 +25,9 @@
     <dimen name="radio_button2_marginStart">10dp</dimen>
     <dimen name="radio_button3_marginStart">10dp</dimen>
     <dimen name="button_radius">16dp</dimen>
-    <dimen name="switcher_width">45dp</dimen>
+    <dimen name="switcher_width">42dp</dimen>
     <dimen name="switcher_marginTop">90dp</dimen>
-    <dimen name="switcher_marginEnd">8dp</dimen>
+    <dimen name="switcher_marginEnd">10dp</dimen>
 
     <!-- main drawer-->
     <dimen name="gps_info_height">86dp</dimen>
