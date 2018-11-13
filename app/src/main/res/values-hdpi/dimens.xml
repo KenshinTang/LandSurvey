@@ -8,7 +8,7 @@
     <dimen name="textSize_tiny">8sp</dimen>
 
     <dimen name="button_width_default">86.67dp</dimen>
-    <dimen name="button_height_default">36dp</dimen>
+    <dimen name="button_height_default">32dp</dimen>
 
     <dimen name="icon_width_main">28dp</dimen>
     <dimen name="icon_width_detail">21.33dp</dimen>
@@ -19,7 +19,7 @@
     <dimen name="drawer_width">272dp</dimen>
     <dimen name="drawer_fragment_width">240dp</dimen>
     <dimen name="mode_layout_width">506.67dp</dimen>
-    <dimen name="mode_layout_height">60dp</dimen>
+    <dimen name="mode_layout_height">50dp</dimen>
     <dimen name="mode_layout_marginEnd">75dp</dimen>
     <dimen name="mode_layout_marginBottom">11.33dp</dimen>
     <dimen name="radio_button1_marginStart">15dp</dimen>
