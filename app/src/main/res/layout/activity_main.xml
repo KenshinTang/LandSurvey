@@ -120,11 +120,12 @@
             android:enabled="false"
             android:onClick="onButtonClick"
 
-            android:background="@color/defaultButtonColor"
+            android:background="@drawable/button_background"
             android:textSize="@dimen/textSize_small"
+            android:textColor="@android:color/white"
             android:text="Piling"/>
 
-        <Button
+        <ToggleButton
             android:id="@+id/button_start_stop"
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="@dimen/button_width_default"
@@ -132,11 +133,13 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/radio_button2_marginStart"
 
-            android:paddingHorizontal="20dp"
+            android:paddingHorizontal="15dp"
             android:background="@drawable/button_background"
             android:onClick="onButtonClick"
+            android:textOff="@string/start_measuring"
+            android:textOn="@string/stop_measuring"
             android:drawableStart="@drawable/start"
-            android:text="Start"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/textSize_small"
             tools:ignore="RtlSymmetry" />
 

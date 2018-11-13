@@ -22,9 +22,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
-import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -41,7 +39,6 @@ import com.kapplication.landsurvey.utils.PermissionUtils
 import com.kapplication.landsurvey.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main_drawer.*
-import mehdi.sakout.fancybuttons.FancyButton
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -376,7 +373,17 @@ class MainActivity : AppCompatActivity(),
                     }
                 }
             }
-            is FancyButton -> when (view.id) {
+            is ToggleButton -> when (view.id) {
+                R.id.button_start_stop -> {
+                    Log.d(TAG, "${if (mIsMeasuring) "stop" else "start"} button clicked.")
+                    if (!mIsMeasuring) {
+                        startMeasuring()
+                    } else {
+                        stopMeasuring()
+                    }
+                }
+            }
+            is Button -> when (view.id) {
                 R.id.button_piling -> {
                     Log.d(TAG, "piling button clicked.")
                     updateGPSInfo(mCurrentLocation)
@@ -384,14 +391,6 @@ class MainActivity : AppCompatActivity(),
                         mPath.add(mCurrentLatLng)
                         val markerOption = MarkerOptions().position(mCurrentLatLng).icon(if (mPath.size() == 1) mFirstMarker else mMarker)
                         mMarkerCollection.addMarker(markerOption)
-                    }
-                }
-                R.id.button_start_stop -> {
-                    Log.d(TAG, "${if (mIsMeasuring) "stop" else "start"} button clicked.")
-                    if (!mIsMeasuring) {
-                        startMeasuring()
-                    } else {
-                        stopMeasuring()
                     }
                 }
                 R.id.button_show_history -> {
@@ -418,17 +417,13 @@ class MainActivity : AppCompatActivity(),
         mPath.clear()
         mAltitudes.clear()
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        button_start_stop.setIconResource(R.drawable.stop)
-        button_start_stop.setText(resources.getString(R.string.stop_measuring))
-        button_start_stop.setBackgroundColor(getColor(R.color.stopButtonColor))
+        button_start_stop.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.stop, 0,0,0)
         mIsMeasuring = true
         mStartTime = Utils.formatTime(System.currentTimeMillis())
     }
 
     private fun stopMeasuring() {
-        button_start_stop.setIconResource(R.drawable.start)
-        button_start_stop.setText(resources.getString(R.string.start_measuring))
-        button_start_stop.setBackgroundColor(getColor(R.color.defaultButtonColor))
+        button_start_stop.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.start, 0,0,0)
         //String.format("%.2f",(SphericalUtil.computeArea(mPath.getList()))) + "㎡"
         textView_area_content_main.text = Utils.convertArea(this, SphericalUtil.computeArea(mPath.getList()), 2)
         textView_perimeter_content_main.text = String.format("%.2f",(SphericalUtil.computeLength(mPath.getList()))) + "m"
