@@ -142,50 +142,6 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/textSize_small"
             tools:ignore="RtlSymmetry" />
-
-        <!--<mehdi.sakout.fancybuttons.FancyButton-->
-            <!--android:id="@+id/button_piling"-->
-            <!--style="@style/Widget.AppCompat.ImageButton"-->
-            <!--android:layout_width="@dimen/button_width_default"-->
-            <!--android:layout_height="@dimen/button_height_default"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_marginStart="@dimen/radio_button2_marginStart"-->
-            <!--android:enabled="false"-->
-
-            <!--fancy:fb_borderColor="#FFFFFF"-->
-            <!--fancy:fb_borderWidth="1dp"-->
-            <!--fancy:fb_defaultColor="@color/defaultButtonColor"-->
-            <!--fancy:fb_disabledColor="#DFDDDD"-->
-            <!--fancy:fb_radius="@dimen/button_radius"-->
-            <!--fancy:fb_text="Piling"-->
-            <!--fancy:fb_textColor="#FFFFFF"-->
-            <!--fancy:fb_disabledTextColor="#FFFFFF"-->
-            <!--fancy:fb_textSize="@dimen/textSize_small"-->
-            <!--android:onClick="onButtonClick"/>-->
-
-        <!--<mehdi.sakout.fancybuttons.FancyButton-->
-            <!--android:id="@+id/button_start_stop"-->
-            <!--style="@style/Widget.AppCompat.ImageButton"-->
-            <!--android:layout_width="@dimen/button_width_default"-->
-            <!--android:layout_height="@dimen/button_height_default"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_marginStart="@dimen/radio_button2_marginStart"-->
-
-            <!--android:paddingStart="-16dp"-->
-            <!--android:paddingEnd="0dp"-->
-            <!--android:paddingTop="10dp"-->
-            <!--android:paddingBottom="10dp"-->
-            <!--fancy:fb_borderColor="#FFFFFF"-->
-            <!--fancy:fb_borderWidth="1dp"-->
-            <!--fancy:fb_defaultColor="@color/defaultButtonColor"-->
-            <!--fancy:fb_radius="@dimen/button_radius"-->
-            <!--fancy:fb_text="Start"-->
-            <!--fancy:fb_textColor="#FFFFFF"-->
-            <!--fancy:fb_textSize="@dimen/textSize_small"-->
-            <!--fancy:fb_iconResource="@drawable/start"-->
-            <!--fancy:fb_iconPosition="left"-->
-            <!--android:onClick="onButtonClick"-->
-            <!--tools:ignore="RtlSymmetry" />-->
     </LinearLayout>
 
     <ImageView
