@@ -137,8 +137,8 @@
 
         <ImageView
             android:id="@+id/imageView_area"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/area"
             app:layout_constraintEnd_toStartOf="@+id/view_divider3"
@@ -171,8 +171,8 @@
 
         <ImageView
             android:id="@+id/imageView_perimeter"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/perimeter"
             app:layout_constraintEnd_toEndOf="parent"
@@ -205,8 +205,8 @@
 
         <ImageView
             android:id="@+id/imageView_latitude"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/latitude"
             app:layout_constraintEnd_toStartOf="@+id/view_divider4"
@@ -239,8 +239,8 @@
 
         <ImageView
             android:id="@+id/imageView_longitude"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/longitude"
             app:layout_constraintEnd_toEndOf="parent"
@@ -273,8 +273,8 @@
 
         <ImageView
             android:id="@+id/imageView_start_time"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/time"
             app:layout_constraintEnd_toStartOf="@+id/view_divider5"
@@ -307,8 +307,8 @@
 
         <ImageView
             android:id="@+id/imageView_end_time"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_detail"
+            android:layout_height="@dimen/icon_width_detail"
             android:layout_marginTop="@dimen/detail_icon_marginTop"
             android:src="@drawable/time"
             app:layout_constraintEnd_toEndOf="parent"

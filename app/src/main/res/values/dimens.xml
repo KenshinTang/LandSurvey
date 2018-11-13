@@ -10,7 +10,8 @@
     <dimen name="button_width_default">130dp</dimen>
     <dimen name="button_height_default">54dp</dimen>
 
-    <dimen name="icon_width">32dp</dimen>
+    <dimen name="icon_width_main">32dp</dimen>
+    <dimen name="icon_width_detail">32dp</dimen>
 
     <!-- main activity-->
     <dimen name="map_margin_top">56dp</dimen>

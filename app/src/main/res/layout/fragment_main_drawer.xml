@@ -60,8 +60,8 @@
 
             <ImageView
                 android:id="@+id/imageView_satellite"
-                android:layout_width="@dimen/icon_width"
-                android:layout_height="@dimen/icon_width"
+                android:layout_width="@dimen/icon_width_main"
+                android:layout_height="@dimen/icon_width_main"
                 android:layout_marginTop="@dimen/gps_info_icon_marginTop"
                 android:src="@drawable/satellite"
                 app:layout_constraintEnd_toStartOf="@+id/view_divider2"
@@ -71,8 +71,8 @@
 
             <ImageView
                 android:id="@+id/imageView_precision"
-                android:layout_width="@dimen/icon_width"
-                android:layout_height="@dimen/icon_width"
+                android:layout_width="@dimen/icon_width_main"
+                android:layout_height="@dimen/icon_width_main"
                 android:layout_marginTop="@dimen/gps_info_icon_marginTop"
                 android:src="@drawable/precision"
                 app:layout_constraintEnd_toStartOf="@+id/view_divider3"
@@ -81,8 +81,8 @@
 
             <ImageView
                 android:id="@+id/imageView_points"
-                android:layout_width="@dimen/icon_width"
-                android:layout_height="@dimen/icon_width"
+                android:layout_width="@dimen/icon_width_main"
+                android:layout_height="@dimen/icon_width_main"
                 android:layout_marginTop="@dimen/gps_info_icon_marginTop"
                 android:src="@drawable/points"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -245,8 +245,8 @@
 
         <ImageView
             android:id="@+id/imageView_area"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_main"
+            android:layout_height="@dimen/icon_width_main"
             android:layout_marginTop="@dimen/area_marginTop"
             android:src="@drawable/area"
             android:clickable="false"
@@ -280,8 +280,8 @@
 
         <ImageView
             android:id="@+id/imageView_perimeter"
-            android:layout_width="@dimen/icon_width"
-            android:layout_height="@dimen/icon_width"
+            android:layout_width="@dimen/icon_width_main"
+            android:layout_height="@dimen/icon_width_main"
             android:layout_marginTop="@dimen/area_marginTop"
             android:src="@drawable/perimeter"
             android:clickable="false"

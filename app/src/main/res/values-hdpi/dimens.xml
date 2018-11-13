@@ -10,7 +10,8 @@
     <dimen name="button_width_default">86.67dp</dimen>
     <dimen name="button_height_default">36dp</dimen>
 
-    <dimen name="icon_width">21.33dp</dimen>
+    <dimen name="icon_width_main">28dp</dimen>
+    <dimen name="icon_width_detail">21.33dp</dimen>
 
     <!-- main activity-->
     <dimen name="map_margin_top">36.67dp</dimen>
@@ -35,7 +36,7 @@
     <dimen name="divider23_height">48dp</dimen>
     <dimen name="divider23_marginTop">21.33dp</dimen>
     <dimen name="divider23_margin">80dp</dimen>
-    <dimen name="gps_info_icon_marginTop">22.67dp</dimen>
+    <dimen name="gps_info_icon_marginTop">12dp</dimen>
     <dimen name="gps_info_content_marginTop">46.67dp</dimen>
     <dimen name="gps_info_title_marginTop">68dp</dimen>
     <dimen name="satellite_state_marginTop">30dp</dimen>
