@@ -102,13 +102,17 @@ class MainActivity : AppCompatActivity(),
             location.latitude = gcjPointer.latitude
             location.longitude = gcjPointer.longitude
 
-            mCurrentLocation = location
-            mCurrentLatLng = LatLng(mCurrentLocation?.latitude!!, mCurrentLocation?.longitude!!)
-            updateGPSInfo(mCurrentLocation)
-            if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, 2)) {
-                if (mPath.size() == 1) {
-                    val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
-                    mMarkerCollection.addMarker(markerOption)
+            mCurrentLocation = Utils.filterLocation(location).also {
+                if(it.extras.getBoolean("VALID", false)) {
+                    mCurrentLatLng = LatLng(it.latitude, it.longitude)
+                    updateGPSInfo(it)
+                    if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, it.accuracy.toInt())) {
+                        Toast.makeText(mContext, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
+                        if (mPath.size() == 1) {
+                            val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
+                            mMarkerCollection.addMarker(markerOption)
+                        }
+                    }
                 }
             }
         }
@@ -171,7 +175,7 @@ class MainActivity : AppCompatActivity(),
             return
         }
         Log.i(TAG, "requestLocationUpdates")
-        mLocationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2.0f, mLocationListener)
+        mLocationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 3.0f, mLocationListener)
         mLocationManager?.registerGnssStatusCallback(mGnssStatusCallback)
     }
 
@@ -531,11 +535,11 @@ class MainActivity : AppCompatActivity(),
         val position = marker?.position
         val index = mPath.getList().indexOf(position)
 
-        mMarkerCollection?.remove(marker)
+        mMarkerCollection.remove(marker)
         mPath.remove(position!!)
 
         if (index == 0) {
-            mMarkerCollection?.markers?.first()?.setIcon(mFirstMarker)
+            mMarkerCollection.markers?.first()?.setIcon(mFirstMarker)
         }
 
         dialog.dismiss()
@@ -578,7 +582,7 @@ class MainActivity : AppCompatActivity(),
 
         for ((index, point) in points.withIndex()) {
             val markerOption = MarkerOptions().position(point).icon(if (index == 0) mFirstMarker else mMarker)
-            mMarkerCollection?.addMarker(markerOption)
+            mMarkerCollection.addMarker(markerOption)
         }
         mPolygon = mGoogleMap.addPolygon(PolygonOptions()
                 .addAll(points)

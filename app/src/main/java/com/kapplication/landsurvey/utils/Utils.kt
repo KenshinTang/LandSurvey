@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
@@ -95,7 +96,24 @@ class Utils {
             Log.i(TAG, "isNetworkConnected = $isNetworkConnected")
             return isNetworkConnected
         }
+
+        fun filterLocation(location: Location) : Location {
+            if (location.latitude.precision() < 6 || location.longitude.precision() < 6) {
+                location.extras.putBoolean("VALID", false)
+            } else {
+                location.extras.putBoolean("VALID", true)
+                location.latitude = location.latitude.format(6)
+                location.longitude = location.longitude.format(6)
+            }
+            return location
+        }
+
+        private fun Double.format(fractionDigits: Int): Double {
+            return String.format("%.${fractionDigits}f", this).toDouble()
+        }
+
+        private fun Double.precision() : Int {
+            return this.toString().substringAfter('.').length
+        }
     }
-
-
 }
