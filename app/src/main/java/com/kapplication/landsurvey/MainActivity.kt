@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity(),
                     mCurrentLatLng = LatLng(it.latitude, it.longitude)
                     updateGPSInfo(it)
                     if (mCurrentMode == Mode.AUTOMATIC && mIsMeasuring && mPath.add(mCurrentLatLng, it.accuracy.toInt())) {
-                        Toast.makeText(mContext, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(mContext, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
                         if (mPath.size() == 1) {
                             val markerOption = MarkerOptions().position(mCurrentLatLng).icon(mFirstMarker)
                             mMarkerCollection.addMarker(markerOption)
@@ -159,15 +159,16 @@ class MainActivity : AppCompatActivity(),
         init()
         mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+        registerReceiver(mNetworkChangeReceiver, IntentFilter().apply {
+            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        })
+
         PermissionUtils.checkPermissionAndRequest(this, PERMISSION_REQUEST_CODE, true)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
         checkLocationSetting()
-        registerReceiver(mNetworkChangeReceiver, IntentFilter().apply {
-            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        })
     }
 
     private fun requestLocationUpdates() {
