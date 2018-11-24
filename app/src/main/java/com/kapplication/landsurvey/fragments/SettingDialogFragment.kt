@@ -41,6 +41,8 @@ class SettingDialogFragment : DialogFragment() {
             Units.ACRE.ordinal -> view.findViewById<RadioButton>(R.id.radio_acre).isChecked = true
             Units.SQUARE_MILE.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqmi).isChecked = true
             Units.SQUARE_FOOT.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqft).isChecked = true
+            Units.SQUARE_METER.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqm).isChecked = true
+            Units.SQUARE_KILOMETER.ordinal -> view.findViewById<RadioButton>(R.id.radio_sqkm).isChecked = true
         }
 
         view.findViewById<Button>(R.id.button_save).setOnClickListener {
@@ -60,6 +62,12 @@ class SettingDialogFragment : DialogFragment() {
         }
         view.findViewById<RadioButton>(R.id.radio_sqft).setOnClickListener {
             mCurrentUnit = Units.SQUARE_FOOT
+        }
+        view.findViewById<RadioButton>(R.id.radio_sqm).setOnClickListener {
+            mCurrentUnit = Units.SQUARE_METER
+        }
+        view.findViewById<RadioButton>(R.id.radio_sqkm).setOnClickListener {
+            mCurrentUnit = Units.SQUARE_KILOMETER
         }
 
         return view

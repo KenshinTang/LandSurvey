@@ -84,6 +84,12 @@ class Utils {
                 Units.SQUARE_FOOT.ordinal -> {
                     String.format("%.${fractionDigits}f ft²", num*10.76391)
                 }
+                Units.SQUARE_METER.ordinal -> {
+                    String.format("%.${fractionDigits}f ㎡", num)
+                }
+                Units.SQUARE_KILOMETER.ordinal -> {
+                    String.format("%.${fractionDigits}f km²", num*0.000001)
+                }
                 else -> {
                     String.format("%.${fractionDigits}f ac", num*0.0002471055)
                 }

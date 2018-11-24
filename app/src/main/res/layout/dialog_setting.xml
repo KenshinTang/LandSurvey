@@ -52,6 +52,26 @@
             android:text="@string/unit_sqft"
             android:textColor="@color/textColor"
             android:textSize="@dimen/textSize_normal"/>
+        <RadioButton
+            android:id="@+id/radio_sqm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/radio_marginBottom"
+            android:layout_marginStart="@dimen/radio_marginStart"
+            android:paddingStart="@dimen/radio_paddingStart"
+            android:text="@string/unit_sqm"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/textSize_normal"/>
+        <RadioButton
+            android:id="@+id/radio_sqkm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/radio_marginBottom"
+            android:layout_marginStart="@dimen/radio_marginStart"
+            android:paddingStart="@dimen/radio_paddingStart"
+            android:text="@string/unit_sqkm"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/textSize_normal"/>
     </RadioGroup>
 
     <LinearLayout

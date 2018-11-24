@@ -539,8 +539,10 @@ class MainActivity : AppCompatActivity(),
         mMarkerCollection.remove(marker)
         mPath.remove(position!!)
 
-        if (index == 0) {
-            mMarkerCollection.markers?.first()?.setIcon(mFirstMarker)
+        val markers = mMarkerCollection.markers
+
+        if (index == 0 && markers != null && markers.isNotEmpty()) {
+            markers.first()?.setIcon(mFirstMarker)
         }
 
         dialog.dismiss()
